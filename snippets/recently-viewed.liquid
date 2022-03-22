@@ -1,0 +1,41 @@
+{{ '//ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js' | script_tag }}
+{{ 'jquery.products.js' | asset_url | script_tag }}
+<h2>Recently Viewed Products</h2>
+<div id="recently-viewed-products" class="homepage collection clearfix" style="display:none">
+
+</div>
+
+{% raw %}
+<div >
+  <script id="recently-viewed-product-template"  type="text/x-jquery-tmpl">
+<div id="product-${handle}" class="product item">
+  <div class="image">
+    <a href="${url}">
+      <img src="${Shopify.Products.resizeImage(featured_image, "medium")}" />
+    </a>
+    </div>
+  <div class="details">
+    <a href="${url}">
+      <p>${title}</p>
+    </a>
+    </div>
+  <div class="product-item--price">
+ <span class="medium--left">{{if price_varies}}From {{/if}}${Shopify.formatMoney(price)}</span>
+    </div>
+    </div>
+  </script>
+</div>
+{% endraw %}
+<script>
+  Shopify.Products.showRecentlyViewed( { howManyToShow:4 } );
+</script>
+<style>
+  .recently-view-item .container {
+    width: 100%;
+  }
+  .recently-view-item .product
+  {
+    width:100%;
+  }
+</style>
+

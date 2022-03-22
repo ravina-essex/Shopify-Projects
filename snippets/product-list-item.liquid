@@ -1,0 +1,79 @@
+{% unless current_collection %}
+{% assign current_collection = collection %}
+{% endunless %}
+
+{% assign on_sale = false %}
+{% if product.compare_at_price > product.price %}
+{% assign on_sale = true %}
+{% endif %}
+
+{% assign sold_out = true %}
+{% if product.available  %}
+{% assign sold_out = false %}
+{% endif %}
+
+{% assign image_size = settings.collection_prod_image_sizes %}
+<div class="grid-item{% if sold_out %} sold-out{% endif %}{% if on_sale %} on-sale{% endif %}">
+   {% if on_sale %}
+    <div class="new_offer"><h1>Sale</h1></div>
+    {% endif %}
+    {% if sold_out %}
+    <div class="badge badge--sold-out"><span class="badge-label">{{ 'products.product.sold_out' | t }}</span></div>
+    {% endif %}
+  <div class="col-sm-3 product-image product-hover" style="padding:0;">
+    <a class="product-list-thumb" href="{{ product.url | within: current_collection }}">
+      <img src="{{ product.featured_image.src | img_url: image_size }}" alt="{{ product.featured_image.alt | escape }}">
+    </a>    
+     </div>
+
+  <div class="col-sm-9 product-details">
+    <a class="product-title" href="{{ product.url | within: current_collection }}">{{ product.title }}</a>
+    <div class="rte">
+      <p>{{ product.content | strip_html | truncatewords: 30 }}</p>
+    </div>
+    <span class="price-box">
+      <h6 class="pro-price-list">
+        {% if product.compare_at_price > product.price %}
+        <s id="ComparePrice" class="product-single__sale-price">
+          {{ product.compare_at_price_max | money }}
+        </s>
+        {% endif %}
+        <span id="ProductPrice" class="product-single__price old-price" itemprop="price">
+          {{ product.price | money }}
+        </span>
+      </h6>
+    </span>
+    <div class="action">
+      <form action="/cart/add" method="post" enctype="multipart/form-data" id="addToCartForm">
+        <div class="prdct_list_form hidden">  
+        <select name="id" id="productSelect" class="product-variants">
+          {% for variant in product.variants %}
+            {% if variant.available %}
+
+              <option {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %} data-sku="{{ variant.sku }}" value="{{ variant.id }}">{{ variant.title }} - {{ variant.price | money_with_currency }}</option>
+
+            {% else %}
+              <option disabled="disabled">
+                {{ variant.title }} - {{ 'products.product.sold_out' | t }}
+              </option>
+            {% endif %}
+          {% endfor %}
+        </select>
+
+        {% if settings.product_quantity_enable %}
+          <label for="quantity" class="quantity-selector">{{ 'products.product.quantity' | t }}</label>
+          <input type="number" id="quantity" name="quantity" value="1" min="1" class="quantity-selector">
+        {% endif %}
+        </div>
+        <button type="submit" name="add" id="addToCart" class="btn">
+          <span class="icon icon-cart"></span>
+          <span id="addToCartText">{{ 'products.product.add_to_cart' | t }}</span>
+        </button>
+        {% if settings.product_quantity_message %}
+          <span id="variantQuantity" class="variant-quantity"></span>
+        {% endif %}
+        {% include 'wishl-wishlist', wishl_adder: 'atomic_with_text' %}
+      </form> 
+    </div> 
+  </div>
+</div>

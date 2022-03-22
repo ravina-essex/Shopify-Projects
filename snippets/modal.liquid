@@ -1,0 +1,178 @@
+<div id="{{ product.id }}" class="modal_p {{ product.id }}">
+  <div class="container content">
+
+    <div class="six columns" style="padding:0;" >
+      <div class="col-sm-4" id="ProductPhoto">
+        {% if settings.product_thumbnails_position == 'below' or product.images.size < 2 %}
+        {% assign featured_image = product.selected_or_first_available_variant.featured_image | default: product.featured_image %}
+        <img src="{{ featured_image | img_url: '1024x1024' }}" alt="{{ featured_image.alt | escape }}" id="ProductPhotoImg"{% if settings.product_image_zoom_type == 'zoom-in' %} data-zoom="{{ featured_image | img_url: '1024x1024' }}"{% endif %} data-image-id="{{ featured_image.id }}">
+
+        {% if product.images.size > 1 %}
+
+        <ul class="product-single__thumbnails grid-uniform modal_product" id="ProductThumbs">
+          {% for image in product.images %}
+          <li class="">
+            <a data-image-id="{{ image.id }}" href="{{ image.src | img_url: '1024x1024' }}" class="product-single__thumbnail">
+              <img src="{{ image.src | img_url: 'grande' }}" alt="{{ image.alt | escape }}">
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+
+        {% endif %}
+
+        {% else %}
+
+        <div class="grid">
+
+          <div class="grid__item four-fifths product-single__photos" id="ProductPhoto">
+            {% assign featured_image = product.selected_or_first_available_variant.featured_image | default: product.featured_image %}
+            <img src="{{ featured_image | img_url: '1024x1024' }}" alt="{{ featured_image.alt | escape }}" id="ProductPhotoImg"{% if settings.product_image_zoom_type == 'zoom-in' %} data-zoom="{{ featured_image | img_url: '1024x1024' }}"{% endif %} data-image-id="{{ featured_image.id }}">
+          </div>
+
+          <div class="col-sm-12 modal_slider">
+            <ul class="product-single__thumbnails grid-uniform modal_product" id="ProductThumbs">
+              {% for image in product.images %}
+              <li class="">
+                <a data-image-id="{{ image.id }}" href="{{ image.src | img_url: '1024x1024' }}" class="product-single__thumbnail">
+                  <img src="{{ image.src | img_url: 'grande' }}" alt="{{ image.alt | escape }}">
+                </a>
+              </li>
+              {% endfor %}
+            </ul>
+
+          </div>
+
+        </div>
+
+        {% endif %}
+        {% if settings.product_image_zoom_type == 'lightbox' %}
+        <ul class="gallery" class="hidden">
+          {% for image in product.images %}
+          <li data-image-id="{{ image.id }}" class="gallery__item" data-mfp-src="{{ image | img_url: '1024x1024' }}"></li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </div>
+      <div class="col-sm-4">
+        <h3>{{ product.title }}</h3>
+        <p>{{ product.content }}</p>
+      </div>
+      <div class="col-sm-4 product_details">
+        <h2 itemprop="name">{{ product.title }}</h2>
+        {% if settings.product_vendor_enable %}
+        <p class="product-meta" itemprop="brand">{{ product.vendor }}</p>
+        {% endif %}
+
+        <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+
+          {% assign variant = product.selected_or_first_available_variant %}
+
+          <meta itemprop="priceCurrency" content="{{ shop.currency }}">
+          <meta itemprop="price" content="{{ variant.price | money_without_currency }}">
+
+          <ul class="inline-list product-meta">
+            <li>
+              <span>  {% if product.compare_at_price > product.price %}
+                <s id="ComparePrice" class="product-single__sale-price">
+                  {{ product.compare_at_price_max | money }}
+                </s>
+                {% endif %}
+              </span>
+            </li>
+            <li>
+              <span id="ProductPrice" class="product-single__price old-price" itemprop="price">
+                {{ product.price | money }}
+              </span>
+            </li>
+            <li>
+              {% if product.compare_at_price > product.price and settings.product_show_saved_amount %}
+              <span id="SavePrice" class="sale-tag large">
+                {% assign compare_price = variant.compare_at_price %}
+                {% assign product_price = variant.price %}
+                {% include 'price-sale' %}
+              </span>
+            </li>
+            {% endif %}
+          </ul>
+          <link itemprop="availability" href="http://schema.org/{% if product.available %}InStock{% else %}OutOfStock{% endif %}">
+          <form action="/cart/add" method="post" enctype="multipart/form-data" id="addToCartForm">
+            <select name="id" id="productSelect" class="product-variants">
+              {% for variant in product.variants %}
+              {% if variant.available %}
+
+              <option {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %} data-sku="{{ variant.sku }}" value="{{ variant.id }}">{{ variant.title }} - {{ variant.price | money_with_currency }}</option>
+
+              {% else %}
+              <option disabled="disabled">
+                {{ variant.title }} - {{ 'products.product.sold_out' | t }}
+              </option>
+              {% endif %}
+              {% endfor %}
+            </select>
+            <div class="Quantity">
+              {% if settings.product_quantity_enable %}
+              <label for="quantity" class="quantity-selector">{{ 'products.product.quantity' | t }}:</label>
+              <input type="number" id="quantity" name="quantity" value="1" min="1" class="quantity-selector">
+              {% endif %}
+            </div>
+            <button type="submit" name="add" id="addToCart" class="btn">
+              <span class="icon icon-cart"></span>
+              <span id="addToCartText">{{ 'products.product.add_to_cart' | t }}</span>
+            </button>
+
+            {% include 'wishl-wishlist', wishl_adder: 'atomic_with_text' %}
+            {% if settings.product_quantity_message %}
+            <span id="variantQuantity" class="variant-quantity"></span>
+            {% endif %}
+          </form>
+        </div>
+      </div>
+      {% comment %}
+      <div class="col-sm-4">
+        <div class="product-meta">
+          <h5>{{ product.title }}</h5>
+          <div class="content_price">
+
+            <span id="ProductPrice" class="product-single__price" itemprop="price">
+              {{ product.price | money }}
+            </span>
+
+            {% if product.compare_at_price > product.price %}
+            <s id="ComparePrice" class="product-single__sale-price">
+              {{ product.compare_at_price_max | money }}
+            </s>
+            {% endif %}
+          </div>
+          <div class="functional-buttons clearfix">
+            <div class="cart">
+
+              <div class="action">
+                {% include 'product-form' %}
+              </div> 
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endcomment %}
+    </div>
+    <div class="clear"></div>
+  </div>
+</div>
+<script>
+  if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+    $(".quick_shop").remove();
+  } else {
+    //$('.thumbnail_img').hover(function(){ $(this).find('.quick_shop').show(); $(this).addClass('swap');  }, function(){ $(this).find('.quick_shop').hide(); $(this).removeClass('swap'); })
+    var modal_width = '840px';
+    if($(window).width() >= 1200 || $('html').hasClass('ie')) {
+      modal_width = '1080px'
+    }
+    $(".quick_shop").fancybox({
+      width: modal_width,
+      height: 'auto',
+      autoSize: false,
+      padding: [0, 20, 0, 20]
+    });
+  }	
+</script>

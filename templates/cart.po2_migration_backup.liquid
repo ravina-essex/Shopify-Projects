@@ -1,0 +1,434 @@
+
+<!-- spurit_po-added -->
+{% include 'spurit_po-cart-snippet' %}
+<!-- /spurit_po-added -->
+{% include 'banner-top' %}
+<div class="container">
+  <div class="cart_css">
+    {% if cart.item_count > 0 %}
+    <form action="/cart" method="post" class="cart-form" novalidate>
+
+      <h1 class="h2">{{ 'cart.general.title' | t }}</h1>
+      {% assign variant = product.selected_or_first_available_variant %}
+      {% for item in cart.items %}
+      <div class="cart-row" data-line="{{ forloop.index }}">
+        <div class="grid">
+
+          <div class="grid-item large--seven-twelfths">
+            <div class="grid">
+
+              <div class="grid-item one-third large--one-quarter">
+                <a href="{{ item.url }}" class="cart-image">
+                  <img src="{{ item | img_url: 'medium' }}"  alt="{{ item.title | escape }}">
+                </a>
+              </div>
+
+              <div class="grid-item two-thirds large--three-quarters">
+                <a href="{{ item.url }}">
+                  {{ item.product.title }}
+                </a>
+                {% unless item.variant.title contains 'Default' %}
+                <br>
+                <small>{{ item.variant.title }}</small>
+                {% endunless %}
+                <div class="mono">
+
+                  {% assign property_size = item.properties | size %}
+                  {% if property_size > 0 %}
+                  {% for p in item.properties %}
+                  {% unless p.last == blank %}
+                  {{ p.first }}:
+                  {% if p.last contains '/uploads/' %}
+                  <a class="lightbox" href="{{ p.last }}">{{ p.last | split: '/' | last }}</a>
+                  {% else %}
+                  {{ p.last }}
+                  {% endif %}
+                  <br>
+                  {% endunless %}
+                  {% endfor %}
+                  {% endif %}
+
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="grid-item large--five-twelfths medium--two-thirds push--medium--one-third">
+            <div class="grid">
+
+              <div class="grid-item one-half medium-down--one-third text-right">
+                <input type="number" name="updates[]" id="updates_{{ item.id }}" value="{{ item.quantity }}" min="0" data-line="{{ forloop.index }}">
+              </div>
+
+              <div class="grid-item one-third medium-down--one-third medium-down--text-left text-right">
+                <span class="h2 item_price">
+                  {{ item.price | money }}
+                </span>
+              </div>
+
+              <div class="grid-item one-sixth medium-down--one-third text-right">
+                <a href="/cart/change?line={{ forloop.index }}&amp;quantity=0" data-line="{{ forloop.index }}" class="icon-fallback-text btn-secondary remove">
+                  <span class="icon icon-x" aria-hidden="true"></span>
+                  <span class="fallback-text">{{ 'cart.general.remove' | t }}</span>
+                </a>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      {% endfor %}
+
+      <div class="cart-row">
+        <div class="grid">
+
+          {% if settings.cart_notes_enable %}
+          <div class="grid-item large--one-half">
+            <label for="cartSpecialInstructions">{{ 'cart.general.note' | t }}</label>
+            <textarea name="note" class="input-full" id="cartSpecialInstructions">{{ cart.note }}</textarea>
+          </div>
+          {% endif %}
+
+          <div class="grid-item text-right {% if settings.cart_notes_enable %}large--one-half{% endif %}">
+
+            <div class="cart-subtotal">
+              {{ 'cart.general.subtotal' | t }}
+              <span class="h1 cart-subtotal--price">
+                {{ cart.total_price | money }}
+              </span>
+            </div>
+            <p class="cart-subtotal__note"><em>{{ 'cart.general.taxes_extra' | t }}</em></p>
+
+            <input type="submit" name="update" class="btn-secondary update-cart" value="{{ 'cart.general.update' | t }}">
+
+            <button type="submit" name="checkout" class="btn">
+              <span class="icon icon-cart"></span>
+              {{ 'cart.general.checkout' | t }}
+            </button>
+
+            {% if additional_checkout_buttons %}
+            <div class="additional-checkout-buttons">{{ content_for_additional_checkout_buttons }}</div>
+            {% endif %}
+
+          </div>
+
+        </div>
+      </div>
+
+
+      {% include 'shipping-calculator' %}
+
+
+    </form>
+    <div>
+      {% assign isBeltHanger = 'false' %}
+      {% assign isWallets = 'false' %}
+      {% for item in cart.items %}
+      {% if item.product.handle == 'parx-black-men-shirt' %}
+      {% assign isBeltHanger = 'true' %}
+      {% endif %}
+      {% if item.product.handle == 'black-anarkali' %}
+      {% assign isWallets = 'true' %}
+      {% endif %}
+      {% endfor %}
+
+      {% if isBeltHanger == 'false' %}
+      {% assign featured_image = all_products.parx-black-men-shirt.featured_image | default: product.featured_image %}
+      <div data-href="upsell-details-hanger" class="upsell-cart-prod">
+        <div class="upsell_button">
+          <div class="upsell-tip">Add</div>
+          <span class="upsell-add"> <span class="upsell-plus">+</span> </span>
+          <div class="upsell-product"> <img alt="" src="{{ featured_image | img_url: 'medium' }}"> </div>
+          <h9>{{ all_products.parx-black-men-shirt.title }}</h9>
+          <div class="upsell-price">{{ all_products.parx-black-men-shirt.price | money }}</div>
+          <form action="/cart/add" method="post" data-money-format="{{ shop.money_format }}">
+            {% if all_products.parx-black-men-shirt.options.size > 1 %}
+            <div class="select" style="display: none;">      
+              <select id="product-select-{{ all_products.parx-black-men-shirt.id }}" name='id' class="single-option-selector">
+                {% for variant in all_products.parx-black-men-shirt.variants %}
+                {% unless variant.title contains '% Off' %}
+                <option value="{{ variant.id }}" {% if variant == all_products.parx-black-men-shirt.selected_or_first_available_variant %} selected="selected" {% endif %}>{{ variant.title }}</option>
+                {% endunless %}
+                {% endfor %}
+              </select>
+            </div>
+            {% else %}
+            <input type="hidden" name="id" value="{{ all_products.parx-black-men-shirt.variants.first.id }}"  />
+            {% endif %}    
+            {% assign product = all_products.parx-black-men-shirt %}
+            <input type="submit" name="add" class="fde btn add" value="Add To Cart" id="add-to-cart" />                         
+          </form>                      
+        </div>
+      </div>
+      {% endif %}
+
+      {% for item in cart.items %}
+      {% for collection in item.product.collections %}
+      {% if collection.handle == "anarkali-dresses" %}
+      {% if isWallets == 'false' %}
+      {% assign featured_image = all_products.black-anarkali.featured_image | default: product.featured_image %}
+      <div data-href="upsell-details-wallet" class="upsell-cart-prod">
+        <div class="upsell_button">
+          <div class="upsell-tip">Add</div>
+          <span class="upsell-add"> <span class="upsell-plus">+</span> </span>
+          <div class="upsell-product"> <img alt="" src="{{ featured_image | img_url: 'medium' }}"> </div>
+          <h9>{{ all_products.black-anarkali.title }}</h9>
+          <div class="upsell-price">{{ all_products.black-anarkali.price | money }}</div>
+          <form action="/cart/add" method="post" data-money-format="{{ shop.money_format }}">
+            {% if all_products.black-anarkali.options.size > 1 %}
+            <div class="select" style="display: none;">      
+              <select id="product-select-{{ all_products.black-anarkali.id }}" name='id' class="single-option-selector">
+                {% for variant in all_products.black-anarkali.variants %}
+                {% unless variant.title contains '% Off' %}
+                <option value="{{ variant.id }}" {% if variant == all_products.black-anarkali.selected_or_first_available_variant %} selected="selected" {% endif %}>{{ variant.title }}</option>
+                {% endunless %}
+                {% endfor %}
+              </select>
+            </div>
+            {% else %}
+            <input type="hidden" name="id" value="{{ all_products.black-anarkali.variants.first.id }}"  />
+            {% endif %}  
+            {% assign product = all_products.black-anarkali %}
+
+            <input type="submit" name="add" class="fde btn add" value="Add To Cart" id="add-to-cart" />                         
+          </form>
+        </div>
+      </div>
+      {% endif %}
+      {% endif %}
+      {% endfor %}
+      {% endfor %}
+    </div>
+    {% else %}
+
+    <h2>{{ 'cart.general.empty' | t }}</h2>
+    <p>{{ 'cart.general.continue_browsing_html' | t }}</p>
+
+    {% endif %}
+
+
+  </div>
+</div>
+
+
+<style>          
+  .upsell-cart-prod {
+    display: inline-block;
+    margin: 20px 15px 20px 0;
+    position: relative;
+    z-index: 9;
+  }
+  .upsell-cart-prod:last-child {
+    margin-right: 0;
+  }
+  .upsell_button{
+    background-color: white;
+    border: 2px solid white;
+    border-radius: 7px;
+    cursor: pointer;
+    display: inline-block;
+    font-weight: 300;
+    height: 126px;
+    letter-spacing: 0.05em;
+    line-height: 18px;
+    margin-right: 0;
+    padding: 6px 30px 0 10px;
+    position: relative;
+    text-transform: none;
+    width: 280px;
+  }
+  .upsell_button:hover {
+    background-color: white;
+    border: 2px solid #e34f30;
+  }
+  .upsell-tip{
+    font-size: 11px;
+    color: #e34f30;
+    display: none;
+    font-weight: 600;
+    left: -45px;
+    position: absolute;
+    text-transform: uppercase;
+    top: 53px;
+  }
+  .upsell_button:hover .upsell-tip {
+    display: block;
+  }
+  .upsell-add{
+    background-color: #ffffff;
+    border: 2px solid #e34f30;
+    border-radius: 100%;
+    color: #e34f30;
+    cursor: pointer;
+    display: block;
+    height: 18px;
+    left: -20px;
+    margin-left: 8px;
+    position: absolute;
+    top: 51px;
+    vertical-align: -3px;
+    width: 18px;
+  }
+  .upsell_button:hover .upsell-add {
+    background-color: #e34f30;
+    color: white;
+  }
+  .upsell-plus{
+    padding-left: 2px;
+    padding-top: 0;
+    font-size: 16px;
+    font-weight: 600;
+    display: block;
+    margin-top: -1px;
+  }
+  .upsell-product{
+    display: inline-block;
+    float: left;
+    position: static;
+    width: 110px;
+    margin-right: 10px;
+  }
+  .upsell-cart-prod h9 {
+    display: block;
+    color: #0a4d6d;
+    font-size: 12px;
+    letter-spacing: 0.13em;
+    margin-top: 25px;
+    font-weight: bold;
+  }
+  .upsell-price{
+    font-size: 13px;
+    font-weight: 600;
+  }
+  body{
+    position: relative;
+  }
+  .upsell-details {
+    display: none;
+    background: rgba(255, 255, 255, 0.8) none repeat scroll 0 0;
+    bottom: 0;
+    margin: 0 auto;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 99999;
+  }
+  .upsell-product-wrap {
+    position: relative;
+    background: #fff none repeat scroll 0 0;
+    border: 1px solid #ccc;
+    margin: 10% 20%;
+    overflow: hidden;
+    padding: 40px;
+  }
+  .upsell-product-img {
+    float: left;
+    width: 45%;
+  }
+  .upsell-product-text {
+    float: right;
+    width: 45%;
+  }
+  .closedark{
+    position: absolute;
+    cursor: pointer;
+    background-image: url("{{'modal-close-grey.png' | asset_url}}");
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-size: 19px 19px;
+      height: 20px;
+      opacity: 1;
+      right: 30px;
+      top: 30px;
+      width: 20px;
+      z-index: 1000;
+      }
+  .closedark:hover{
+    background-image: url("{{'modal-close-blue.png' | asset_url}}");
+      }
+  #color-chnage {
+    margin: 20px 0 20px;
+    padding: 5px 5px 0;
+  }
+  input.btn {
+    width: 100%;
+  }
+  @media (max-width: 1280px){
+    .swatch .color.options {
+      position: static;
+    }
+    .swatch ul.color li {
+      display: inline-block;
+    } 
+    .upsell-product-wrap {
+      margin: 10%;
+    }
+    #color-chnage {
+      border-bottom: 1px solid #cfcfcf;
+      border-top: 1px solid #cfcfcf;
+    }
+
+  }
+  @media (max-width: 700px){
+    .upsell-product-img {
+      float: none;
+      margin: 0 0 20px;
+      width: auto;
+    }
+    .upsell-product-text {
+      float: none;
+      width: auto;
+    } 
+    .upsell-product-wrap {
+      margin: 80px 40px 40px;
+    }
+    .closedark{
+      top:12px;
+      right:12px;
+    }
+    #swatches {
+      margin: 5px 0 8px;
+    }
+    .swatch .color.options {
+      border: 0 none;
+      height: inherit !important;
+      overflow: inherit;
+      width: auto;
+    }
+    .color-option-arrow {
+      display: none;
+    }
+    .swatch li .tooltip {
+      display: none !important;
+    }
+    .swatch li.color span {
+      height: 30px !important;
+      width: 30px !important;
+    }
+    .swatch ul.color li{
+      border: none !important;
+    }
+    .swatch ul.color li:first-child{
+      border: 1px solid #000 !important;
+    }
+    .swatch li .tooltip{
+      display: inline-block !important;
+    }
+    .upsell-cart-prod {
+      display: block;
+      margin-right: 0 !important;
+    }
+    .upsell_button{
+      width: 100%;
+    }
+  }
+  @media (max-width: 480px){
+    .upsell-product-wrap {
+      margin: 40px 20px;
+      padding: 20px;
+    }
+  }
+</style>

@@ -1,0 +1,105 @@
+.sbHolder {
+  background-color: #ffffff;
+  border: 1px solid #e1e1e1;
+  border-radius: 2px;
+  display: inline-block;
+  font-weight: normal;
+  height: 40px;
+  margin-bottom: 15px;
+  position: relative;
+  vertical-align: top;
+  width: 100%;
+}
+.sbHolder.sbHolderopan{
+	border-radius:2px 2px 0 0;
+  border-bottom:none;
+  
+}
+.sbSelector {
+  color: #7e7e7e;
+  display: block;
+  font-family: "Open Sans",sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  height: 40px;
+  left: 0;
+  letter-spacing: 0.5px;
+  line-height: 40px;
+  outline: medium none;
+  overflow: hidden;
+  position: absolute;
+  text-align: left;
+  text-indent: 9px;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+}
+.sbToggle{
+	background:url("down-arrow.png") no-repeat right center;
+	display: block;
+	height: 40px;
+	outline: none;
+	position: absolute;
+	right: 0;
+	top: 0;
+	width: 30px;
+	z-index:1;
+}
+.sort-by .sbToggle.sbToggleOpen{
+	background:url("up-arrow.png") no-repeat right center;
+   right: 20px;
+}
+.sbHolderDisabled{
+	background-color: #3C3C3C;
+	border: solid 1px #515151;
+}
+.sbSelector:hover, .sbSelector:focus {
+    color: #7e7e7e;
+}
+.sbOptions {
+  background-color: #ffffff;
+  border-radius: 0 0 2px 2px;
+  box-shadow: -2px 5px 10px rgba(42, 42, 42, 0.2);
+  height: 84px;
+  left: 0;
+  list-style: outside none none;
+  margin: 0;
+  overflow-y: auto !important;
+  padding: 0;
+  position: absolute;
+  top: 30px;
+  width: 100%;
+  z-index: 1;
+}
+.sbOptions li{
+	padding: 0;
+	line-height:40px;
+}
+.sbOptions a{
+	border-top:solid 1px #e2e2e2;
+	font-size:14px;
+	display: block;
+	outline: none;
+	padding:0;
+	color:#a48571;
+	font-weight:500;
+	padding:0 20px;
+}
+
+
+.sortlist-post .sbHolder{
+	box-shadow:0 0 10px rgba(255, 255, 255, 0.2);
+	border:solid 1px #e2e2e2;
+}
+.sortlist-post .sbOptions{
+	box-shadow:0 0 10px rgba(255, 255, 255, 0.2);
+	border:solid 1px #e2e2e2;
+	left:-1px;
+	top:38px !important
+}
+.sortlist-post .sbOptions a{
+	color:#c0c0c0;
+}
+.sortlist-post .sbSelector{
+	color:#6cb2be;
+}

@@ -1,0 +1,71 @@
+{% unless grid_item_width %}
+{% assign grid_item_width = 'large--one-third medium--one-half' %}
+{% endunless %}
+
+{% unless current_collection %}
+{% assign current_collection = collection %}
+{% endunless %}
+
+{% assign on_sale = false %}
+{% if item.compare_at_price > item.price %}
+{% assign on_sale = true %}
+{% endif %}
+
+{% assign sold_out = true %}
+{% if item.available %}
+{% assign sold_out = false %}
+{% endif %}
+
+{% assign image_size = settings.collection_prod_image_sizes %}
+<div class="col-sm-3 item{% if sold_out %} sold-out{% endif %}{% if on_sale %} on-sale{% endif %}" style="padding:0;">
+  {% if item.object_type == 'product' %}
+  <div class="product-top product-hover">
+    <a href="{{ item.url | within: current_collection }}" class="product-grid-item">
+      {% if item.featured_image %}
+      <div class="product-thumb product-grid-image"> {% if on_sale %}
+        <div class="new_offer">
+          <h1>Sale</h1>
+        </div>
+        {% endif %}
+
+        {% if sold_out %} 
+        <span class="badge badge--sold-out"> 
+          <span class="badge__text{% if sold_out_text.size > 9 %} badge__text--small{% endif %}">{{ 'products.product.sold_out' | t }}</span>
+        </span> {% endif %} 
+        <img src="{{ item.featured_image.src | img_url: image_size }}" alt="{{ item.featured_image.alt | escape }}">
+        <div class="hover"></div>
+      </div>
+      {% endif %}
+    </a>
+    <div class="image-overlay">
+      <form action="/cart/add" method="post" enctype="multipart/form-data" id="addToCartForm">
+        {% include 'wishl-wishlist', wishl_adder: 'atomic_with' %}
+        <div class="action"> <a class="btn" href="{{ item.url | within: collection }}">Select Option</a> </div>
+      </form>
+      <div class="quickview-button"> 
+        <a class="quick-view-text quick_shop" title="Quick View" id="copy-of-sample-product8" data-fancybox-href="#{{ item.id }}" data-gallery="product-{{ item.id }}-gallery">Quick view</a>
+        {% include 'search_modal' %} 
+      </div>
+    </div>
+  </div>
+  <div class="product-bottom">
+    <a class="product-title" href="{{ product.url | within: collection }}">{{ item.title }}</a>
+
+    <span class="price-box">
+      <h6 class="pro-price-list">
+        {% if item.compare_at_price > item.price %}
+        <s id="ComparePrice" class="product-single__sale-price">
+          {{ item.compare_at_price_max | money }}
+        </s>
+        {% endif %}
+        <span id="ProductPrice" class="product-single__price old-price" itemprop="price">
+          {{ item.price | money }}
+        </span>
+      </h6>
+
+
+    </span>
+
+  </div>
+  {% endif %}
+</div>

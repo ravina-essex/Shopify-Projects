@@ -1,0 +1,37 @@
+{% assign hero_enabled = true %}
+<div class="flexslider" id="heroSlider">
+  <ul class="slides">
+    {% for i in (1..6) %}
+    {% capture slide %}slide_{{ i }}{% endcapture %}
+    {% capture slide_title %}slide_{{ i }}_title{% endcapture %}
+    {% capture slide_link %}slide_{{ i }}_link{% endcapture %}
+    {% capture slide_img %}slide_{{ i }}.jpg{% endcapture %}
+    {% capture slide_alt %}slide_{{ i }}_alt{% endcapture %}   
+
+    {% capture slide_background %}slide_{{ i }}_background_color{% endcapture %}     
+    {% capture slide_text_color %}slide_{{ i }}_color_text{% endcapture %} 
+
+    {% if settings[slide] %}
+
+    <li>
+      {{ slide_img | asset_url | img_tag: settings[slide_alt] }}
+      {% assign hex2rgb_hex = settings[slide_background] %}
+      {% include 'hex2rgb' %}
+      <div class="slider_contain" style="background: rgba({{ hex2rgb_r }}, {{ hex2rgb_g }}, {{ hex2rgb_b }}, 0.3);">
+        <div class="slider-detail">
+          <h4 style="color:{{ settings[slide_text_color] }}">{{ settings[slide_title] }}</h4>
+          <p>{{ settings[slide_alt] }}</p>
+        </div>
+        <div class="btn_buy">
+          <a href="{{ settings[slide_link] }}">
+            <button type="submit" name="add" id="AddToCart" class="btn hvr-shutter-in-horizontal">
+              <span id="AddToCartText">Shop Now</span>
+            </button>
+          </a>
+        </div>
+      </div>
+    </li>
+    {% endif %}
+    {% endfor %}
+  </ul>
+</div>

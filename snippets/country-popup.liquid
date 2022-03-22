@@ -1,0 +1,39 @@
+<script>
+
+  jQuery.ajax( {
+    url: '//freegeoip.net/json/',
+    type: 'POST',
+    dataType: 'jsonp',
+    success: function(location) {
+      // If the visitor is browsing from Canada.
+      var country_name = location.country_name ;
+      //alert(country_name);
+      $( ".country_name" ).append(country_name);
+      if (location.country_code != 'NL') {
+        // Tell him about the Canadian store.
+        //  $.fancybox.open($('#message')); 
+        var visited = jQuery.cookie('visited');
+        if (visited == 'yes') {
+          return false;
+        } else {
+          setTimeout(function()
+                     {
+            $.fancybox.open($('#message')); 
+            jQuery.cookie('visited', 'yes', { expires: {{ settings.newsletter_popup_days }} });
+                                            },60000);
+          }
+                     }
+                     }
+                     });
+</script>
+<div class="container">
+  <div style="display:none;">
+    <div id="message" style="padding:30px;" class="fancybox contry-pop">
+      <h1>Hey,<span class="country_name"></span>. We have great news!</h1>
+      <p>
+       About shipping<br/>
+Prices are i your local currency. Duties & taxes are calculated and paid at check-out. Free shipping when you spend €250,-. Shipping else where? Change your delivery country.</p>
+
+    </div>
+  </div>
+</div>

@@ -1,0 +1,72 @@
+{% include 'banner-top' %}
+
+<div class="container">
+  <div class="grid">
+    <div class="grid-item large--two-thirds push--large--one-sixth">
+      <h1>{{ page.title }}</h1>
+      <div class="rte">
+       <div class="form-container">
+ <form id='foo'>
+      <p>
+        <label>First Name</label>
+        <input id='name' name='FirstName' type='text'>
+      </p><p>
+        <label>Last Name</label>
+        <input id='lastname' name='LastName' type='text'>
+      </p><p>
+        <label>Email Address</label>
+        <input id='email' name='Email' type='email'>
+      </p><p>
+        <label>Phone Number</label>
+        <input id='phone' name='Phone' type='tel'>
+      </p><p>
+      </p>
+        <div id='success'></div>
+        <button type='submit'>Send</button>
+    </form>
+  </div>
+
+<script type="text/javascript">
+  var request;
+  $("#foo").submit(function(event){
+      if (request) {
+          request.abort();
+      }
+      var $form = $(this);
+      var $inputs = $form.find("input, select, button, textarea");
+      var serializedData = $form.serialize();
+      $inputs.prop("disabled", true);
+      request = $.ajax({
+         url: "https://script.google.com/macros/s/AKfycbyAXjKupG_5U0Y_9_JxZx4DMW9eTKf0h3LZGlOfNQeutCduF0A/exec",
+         type: "post",
+          data: serializedData
+      });
+      request.done(function (response, textStatus, jqXHR){
+          console.log("Hooray, it worked!");
+          console.log(response);
+          console.log(textStatus);
+          console.log(jqXHR);
+           $("#name").val("");
+           $("#lastname").val("");
+           $("#email").val("");
+           $("#phone").val("");
+        alert('Success!');
+           //location.href = "http://list.radhecreation.com/wolf/thanks.html"
+     });
+      request.fail(function (jqXHR, textStatus, errorThrown){
+          console.error(
+              "The following error occurred: "+
+              textStatus, errorThrown
+          );
+      });
+      request.always(function () {
+          $inputs.prop("disabled", false);
+      });
+      event.preventDefault();
+  });
+</script>
+
+      </div>
+    </div>
+  </div>
+</div>

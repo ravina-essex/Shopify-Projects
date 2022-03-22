@@ -1,0 +1,130 @@
+{% comment %}
+{% layout 'theme.comming' %}
+{% endcomment %}
+{% assign number_of_index_sections = 0 %}
+
+{% unless settings.home_section_1 == blank %}
+{% assign number_of_index_sections = number_of_index_sections | plus: 1 %}
+{% include settings.home_section_1 %}
+{% endunless %}
+<div class="clear"></div>
+<div class="container">
+  <div class="home_collection">
+    {% include 'home-featured-collections' %}
+  </div>
+  <div class="clear"></div>
+  <div class="feature_product">
+    {% include 'home-product' %}
+  </div>
+  <div class="clear"></div>
+  <div class="feature_collection">
+    {% include 'brands-featured' %}
+  </div>
+  <div class="clear"></div>  
+  <!-- SnapWidget -->
+  <div class="col-sm-6" style="padding:0;">
+    {% include 'instagram' %}
+  </div>
+  <div class="col-sm-6 twitter_card">
+    {% include 'twitter' %}
+  </div>
+{% comment %}
+<!--------- automatically get all vendors ------->
+  {% for vendor in shop.vendors %}
+  {% assign first_letter = vendor | downcase | slice: 0 %}
+  {% assign old_letter = first_letter %}
+
+  {% if '0123456789' contains first_letter %}
+  {% assign digit=true %}
+  {% else %}
+  {% assign digit=false %}
+  {% endif %}
+
+  {% if digit %} 
+  {% if forloop.first == true %}
+  <h1>{{ '0-9'}}</h1>
+  {% endif %}
+  <ul id="brandautolist" style="text-transform: uppercase;">
+    <li style="list-style-type: none;">{{ vendor | link_to_vendor | remove: "vendors?q=" | replace: '%20', '-'}} </li>
+  </ul>
+  {% else %}
+
+  <div id="{{ first_letter}}" class="vendor_list">
+    <h1>{{ first_letter }}</h1>
+  </div>
+  <ul id="brandautolist" style="text-transform: uppercase;">
+    <li style="list-style-type: none;">{{ vendor | link_to_vendor | remove: "vendors?q=" | replace: '%20', '-'}} </li>
+  </ul>
+  {% endif %}
+  {% endfor %}
+
+</div>
+
+<script type="text/javascript">
+  $(document).ready(function () {
+    $('.vendor_list').each(function(i) {
+      $('[id="' + this.id + '"]').slice(1).remove();
+    });
+  });
+</script>
+{% endcomment %}
+{% comment %}
+<div class="pos clear">
+  <script src="https://showcase.abovemarket.com/embed/gallery/2050" data-gallery-id="2050"></script>
+</div>
+{% endcomment %}
+
+
+
+{% comment %}
+{% capture alphabet %}a-b-c-d-e-f-g-h-i-j-k-l-m-n-o-p-q-r-s-t-u-v-w-x-y-z{% endcapture %}
+{% assign letters = alphabet | split: '-' %}
+
+{% for letter in letters %}
+=={{letter}}==<br>
+
+{% for vendor in shop.vendors %}
+
+
+{% assign first_letter = vendor | downcase | slice: 0 %}
+
+{% if first_letter == letter %}
+<li>{{ vendor | link_to_vendor }}</li>
+{% endif %}
+
+{% endfor %}
+
+{% endfor %}
+
+
+{% for vendor in shop.vendors %}
+{% assign first_letter = vendor | downcase | slice: 0 %}
+
+{% if '0123456789' contains first_letter %}
+{% assign digit=true %}
+{% else %}
+{% assign digit=false %}
+{% endif %}
+
+{% if forloop.first %}
+{% if digit %} 
+<h1>*.</h1>
+{% else %}
+<h1>{{ first_letter }}.</h1>
+{% endif %}
+<ul id="brandautolist" style="text-transform: uppercase;">
+  {% elsif current_lettter != first_letter %}
+  {% unless digit %}
+</ul>
+<h1>{{ first_letter }}.</h1>
+<ul id="brandautolist" style="text-transform: uppercase;">
+  {% endunless %}
+  {% endif %} 
+
+  {% assign current_letter = first_letter %}
+  <li style="list-style-type: none;">{{ vendor | link_to_vendor | remove: "vendors?q=" | replace: '%20', '-'}} </li>
+  {% if forloop.last %}
+</ul>
+{% endif %}
+{% endfor %}
+{% endcomment %}

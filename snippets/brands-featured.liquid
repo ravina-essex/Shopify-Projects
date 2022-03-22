@@ -1,0 +1,9 @@
+<fieldset class="box-title">
+  <legend align="center">#Brands Featured on Fashion Store</legend>
+</fieldset>
+{% for collection in collections %}
+{% if collection.handle == 'sarees' or collection.handle == 'dresses' or collection.handle == 'lehengas' %}
+{% assign featured = collection.handle %}
+{% include 'collection-grid-item' %}
+{% endif %}
+{% endfor %}

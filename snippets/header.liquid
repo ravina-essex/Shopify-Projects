@@ -1,0 +1,85 @@
+<a href="/a/feed/?type=collection&key={{ collection.handle }}">
+<img class="rss_feed_icon" src="https://cdnjs.cloudflare.com/ajax/libs/webicons/2.0.0/webicons/webicon-rss-m.png" alt="{{ collection.name }} RSS Feed" title="{{ collection.name }} RSS Feed" />
+</a> 
+<style>
+  .rss_feed_icon {
+  max-width: 30px;
+}
+</style>
+<div class="wrapper">
+  <div class="container">
+    <div class="grid--full">
+      <div class="grid-item large--one-half">
+        {% if template == 'index' %}
+        <h1 class="header-logo" itemscope itemtype="http://schema.org/Organization">
+          {% else %}
+          <div class="h1 header-logo" itemscope itemtype="http://schema.org/Organization">
+            {% endif %}
+            {% if settings.logo_use_image %}
+            <a href="/" itemprop="url" class="n_stick_logo">
+              <img src="{{ 'logo.png' | asset_url }}" alt="{{ shop.name }}" itemprop="logo">
+            </a>
+            {% else %}
+
+            <a href="/" itemprop="url">{{ shop.name }}</a>
+            {% endif %}
+            <a href="/" itemprop="url" class="stick_logo">
+                <img class="lazyloaded" src="{{ 'fashion_logo_sticky.png' | asset_img_url: 'medium' }}"  alt="{{ shop.name }}" itemprop="logo" data-srcset="{{ 'fashion_logo_sticky.png' | asset_img_url: 'medium' }} ,{{ 'fashion_logo_sticky.png' | asset_img_url: 'small'  }}"> 
+        
+            </a>
+            {% if template == 'index' %}
+            </h1>
+          {% else %}
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="grid-item large--one-half text-center large--text-right">
+        <div class="col-sm-12" style="padding:0;">
+          {% include 'search-bar' %}
+        </div>
+        <div class="clear"></div>
+        <div class="col-sm-10 header_detls">
+          <div class="col-sm-5 cart">
+            <a href="/cart" class="header-cart-btn cart-toggle">
+              <span class="icon icon-cart"></span>
+              {{ 'layout.cart.cart' | t }} <span class="cart-count cart-badge--desktop hidden-count">{{ cart.item_count }}</span>
+            </a>
+          </div>
+          <div class="col-sm-3 header_wish">
+            <a href="/pages/wishl-wishlist">
+              <Span><i class="fa fa-heart"></i></Span>
+              <span class="prdct_wish_dtl">My wishlist</span>
+            </a>
+
+          </div>
+          <div class="col-sm-4 acount">
+            {% if settings.header_message != blank or shop.customer_accounts_enabled %}
+            <div class="site-header--text-links{% if settings.header_message == blank %} medium-down--hide{% endif %}">
+              {% if settings.header_message != blank %}
+              {{ settings.header_message }}
+              {% endif %}
+
+              {% if shop.customer_accounts_enabled %}
+              <span class="site-header--meta-links medium-down--hide">
+                {% if customer %}<a href="/account">Account</a>
+                <span class="site-header--spacer">{{ 'layout.customer.or' | t }}</span>                
+                {{ 'layout.customer.log_out' | t | customer_logout_link }}
+                {% else %}
+                {{ 'layout.customer.sign_in' | t | customer_login_link }}
+                <span class="site-header--spacer">{{ 'layout.customer.or' | t }}</span>
+                {{ 'layout.customer.create_account' | t | customer_register_link }}
+                {% endif %}
+              </span>
+              {% endif %}
+            </div>
+            {% endif %}
+          {% comment %}
+            <a href="https://shopify.webkul.com/multivendor/?sid=426" target="_blank">Join us as seller</a>
+         {% endcomment %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

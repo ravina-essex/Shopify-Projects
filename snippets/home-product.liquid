@@ -1,0 +1,12 @@
+<fieldset class="box-title">
+  <legend align="center">Trending Now</legend>
+</fieldset>
+<div class="grid">
+  <div class="grid__item">
+    <div class="home_product_slider">
+      {% for product in collections.feature-product.products %}
+      {% include 'product-grid' %}
+      {% endfor %}
+    </div>
+  </div>
+</div>

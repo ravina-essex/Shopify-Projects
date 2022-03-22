@@ -1,0 +1,90 @@
+{% include 'banner-top' %}
+
+<div class="container">
+  <div class="rte">
+    <h1 class="section-header--title">{{ page.title }}</h1> 
+    {{ page.content }}
+    <br/>
+    {% form 'contact' %}
+    <div class="grid">
+      <div class="grid__item large--two-thirds">
+        {% if form.posted_successfully? %}
+        <p class="note form-success">
+          {{ 'contact.form.post_success' | t }}
+        </p>
+        {% endif %}
+        {{ form.errors | default_errors }}
+        {% assign name_attr = 'contact.form.name' | t | handle %}
+        <label for="ContactFormFirstName" class="label--hidden">First Name:</label>
+        <input type="text" id="ContactFormFirstName" name="contact[FirstName]" placeholder="First Name" required>
+
+        <label for="ContactFormLastName" class="label--hidden">Last Name:</label>
+        <input type="text" id="ContactFormLastName" name="contact[LastName]" placeholder="Last Name" required>
+        
+        <label for="ContactFormAddress" class="label--hidden">Address 2:</label>
+        <input type="text" id="ContactFormAddress" name="contact[Address]" placeholder="Address" required>
+        
+        <label for="ContactFormCity" class="label--hidden">City:</label>
+        <input type="text" id="ContactFormCity" name="contact[City]" placeholder="City" required>
+        
+        <label for="ContactFormState" class="label--hidden">State:</label>
+        <input type="text" id="ContactFormState" name="contact[State]" placeholder="State" required>
+        
+        <label for="ContactFormZip" class="label--hidden">Zip:</label>
+        <input type="text" id="ContactFormZip" name="contact[Zip]" placeholder="Zip">
+        <span class="italic">U.S. addresses only </span>
+
+        <label for="ContactFormEmail" class="label--hidden">{{ 'contact.form.email' | t }}</label>
+        <input type="email" id="ContactFormEmail" name="contact[email]" placeholder="{{ 'contact.form.email' | t }}" autocorrect="off" autocapitalize="off" value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}" required>
+
+         <span class="italic">You will be subscribed to our newsletter in order to receive the 15% incentive. Email addresses never sold. </span>
+        
+          <label>Product:</label>
+        <select name="contact[Product]" >   
+              <option value="">Please select a Product</option>
+               {% for product in collections.all.products %}
+          <option value="{{ product.title }}">{{ product.title }}</option>
+          {% endfor %}
+         
+        </select>
+        <label>Size:</label>
+        <select id="contactFormSize" name="contact[Size]" required>
+          <option value="4">4</option>
+          <option value="6">6</option>
+          <option value="8">8</option>
+          <option value="10">10</option>
+          <option value="12">12</option>
+          <option value="14">14</option>
+          <option value="16">16</option>
+        </select>
+
+        <label for="ContactFormQuantity" class="label--hidden">Quantity</label>
+        <input type="number" id="ContactFormQuantity" name="contact[Quantity]" placeholder="Quantity" required>
+        
+               
+     
+        {% comment %}
+        <label>How did you hear about Femtio Clothing?</label>
+        <select name="contact[How did you hear about Femtio Clothing?]" >         
+          <option value="" disabled selected>Please select a How did you hear about Femtio Clothing?</option>
+          <option value="Email from Femtio Clothing">Email from Femtio Clothing</option>
+          <option value="Referral from friend/family">Referral from friend/family</option>
+          <option value="News Article">News Article</option>
+          <option value="Search Engine">Search Engine</option>
+          <option value="Other">Other</option>
+        </select>
+  
+        <label for="ContactFormMessage" class="label--hidden">{{ 'contact.form.message' | t }}</label>
+        <textarea rows="10" id="ContactFormMessage" name="contact[body]" placeholder="{{ 'contact.form.message' | t }}">{% if form.body %}{{ form.body }}{% endif %}</textarea>
+
+        {% endcomment %}
+        <input type="submit" class="btn right" value="{{ 'contact.form.send' | t }}">
+        
+      </div>
+    </div>
+    {% endform %}
+
+    
+  </div>
+
+</div>

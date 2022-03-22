@@ -1,0 +1,95 @@
+{% include 'banner-top' %}
+<div class="container">  
+  <h1>{{ 'customer.account.title' | t }}</h1>
+  <hr class="hr--small">
+  <div class="grid">
+    <div class="col-sm-9" style="padding-left:0;">
+      <h4>{{ 'customer.orders.title' | t }}</h4>
+      {% paginate customer.orders by 6 %}
+      {% if customer.orders.size != 0 %}
+      <table class="full">
+        <thead>
+          <tr>
+            <th>{{ 'customer.orders.order_number' | t }}</th>
+            <th>{{ 'customer.orders.date' | t }}</th>
+            <th>{{ 'customer.orders.payment_status' | t }}</th>
+            <th>{{ 'customer.orders.fulfillment_status' | t }}</th>
+            <th>{{ 'customer.orders.total' | t }}</th>
+            <th>order process</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in customer.orders %}
+          <tr>
+            <td>{{ order.name | link_to: order.customer_url }}</td>
+            <td>{{ order.created_at | date: format: 'month_day_year' }}</td>
+            <td>{{ order.financial_status_label }}</td>
+            <td>{{ order.fulfillment_status_label }}</td>
+            <td>{{ order.total_price | money }}</td>
+            <td> <a target="_blank" href="https://shopify-order-edit.herokuapp.com/order-editor/{{shop.permanent_domain}}/{{order.id}}">Cancel Or Edit</a>
+            </td>
+          </tr>
+          {% endfor %}
+
+        </tbody>
+      </table>
+
+      {% else %}
+
+      <p>{{ 'customer.orders.none' | t }}</p>
+
+      {% endif %}
+
+      {% if paginate.pages > 1 %}
+      <div class="padding">
+        <div class="toolbar toolbar-bottom">
+          <p class="page-total">  Showing: {{ paginate.current_offset | plus: 1 }}-{% if paginate.next %}{{ paginate.current_offset | plus: paginate.page_size }}{% else %}{{ paginate.items }}{% endif %} of {{ paginate.items }} </p>
+          {% include 'pagination-custom' %}
+        </div>
+      </div>
+      {% endif %}
+      {% endpaginate %}
+    </div>
+
+    <div class="col-sm-3">
+      <h4>{{ 'customer.account.details' | t }}</h4>
+
+      <h5>{{ customer.name }}</h5>
+
+      {% if customer.default_address != nil %}
+      <p>
+        {{ customer.default_address.address1 }}<br>
+
+        {% if customer.default_address.address2 != "" %}
+        {{ customer.default_address.address2 }}<br>
+        {% endif %}
+
+        {% if customer.default_address.city != "" %}
+        {{ customer.default_address.city }}<br>
+        {% endif %}
+
+        {% if customer.default_address.province_code != "" %}
+        {{ customer.default_address.province_code | upcase }}<br>
+        {% endif %}
+
+        {% if customer.default_address.zip != "" %}
+        {{ customer.default_address.zip | upcase }}<br>
+        {% endif %}
+
+        {% if customer.default_address.country != "" %}
+        {{ customer.default_address.country }}<br>
+        {% endif %}
+
+        {% if customer.default_address.phone != "" %}
+        {{ customer.default_address.phone }}
+        {% endif %}
+
+      </p>
+
+      {% endif %}
+
+      <p><a href="/account/addresses">{{ 'customer.account.view_addresses' | t }} ({{ customer.addresses_count }})</a></p>
+    </div>
+
+  </div>
+</div>

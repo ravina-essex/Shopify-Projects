@@ -1,0 +1,40 @@
+<nav class="nav-bar" role="navigation">
+  <div class="wrapper">
+    <div class="container">
+      <div class="search_headr">
+      {% include 'search-bar' %}
+      </div>
+      {% include 'site-nav' %}
+      <div class="sticky_right large--text-right">
+        <div class="nav-search">
+          <a class="search_btn" href="javascript:void(0)"><span class="icon icon-search " aria-hidden="true"></span>
+          </a> 
+          <form action="/search" method="get" class="search-bar hidden" role="search">
+            <input type="hidden" name="type" value="product">
+            <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'layout.search_bar.placeholder' | t }}" aria-label="{{ 'layout.search_bar.placeholder' | t }}">
+            <button type="submit" class="search-bar--submit icon-fallback-text">
+              <span class="icon icon-search" aria-hidden="true"></span>
+              <span class="fallback-text">{{ 'layout.search_bar.submit' | t }}</span>
+            </button>
+          </form>
+
+        </div>
+        <div class="cart">
+          <a href="/cart" class="header-cart-btn cart-toggle">
+            <span class="icon icon-cart"></span>
+            <span class="cart-count cart-badge--desktop hidden-count">{{ cart.item_count }}</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  $(document).ready(function(){
+    $('.search_btn').click(function (event) {
+      event.preventDefault();
+      $('.search-bar').toggleClass('hidden');
+    });
+  });
+</script>

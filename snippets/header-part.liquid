@@ -1,0 +1,19 @@
+<header class="site-header" role="banner">
+  <div class="header-bottom" id="stickyribbon">
+    {% include 'header' %}
+    <div class="menu">
+      {% include 'top-menu' %}
+    </div>
+  </div>
+</header>
+<div id="mobileNavBar">
+  <div class="display-table-cell">
+    <a class="menu-toggle mobileNavBar-link"><span class="icon icon-hamburger"></span>{{ 'layout.navigation.mobile_menu' | t }}</a>
+  </div>
+  <div class="display-table-cell">
+    <a href="/cart" class="cart-toggle mobileNavBar-link">
+      <span class="icon icon-cart"></span>
+      {{ 'layout.cart.cart' | t }} <span class="cart-count {% if cart.item_count == 0 %}hidden-count{% endif %}">{{ cart.item_count }}</span>
+    </a>
+  </div>
+</div>

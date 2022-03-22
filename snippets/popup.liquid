@@ -1,0 +1,102 @@
+{% comment %}
+{% if settings.popup_newsletter_show %}
+{% assign message = 'newsletter.popup_newsletter.message' | t %}
+<div class="container">
+<div class="modal modal--bg fade" id="newsletterModal" data-pause=2000>
+  <div class="modal-dialog white-modal center-center">
+    <div class="white-popup">
+      <button type="button" class="close" style="width: 30px;height: 30px;" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+      <div class="maillist">
+        <div class="col-sm-12 pop-text">
+          <h3>{{ settings.popup_heading }}{% assign language = cart.attributes["language"] %}{% if language == nil %}{% assign language = shop.metafields["languages"]["default"] %}{% endif %}{% assign namespace = language | append: "as" %}{% if shop.metafields[namespace]["id2585709"] %}{% assign ly_translation = shop.metafields[namespace]["id2585709"] %}{% else %}{% assign ly_translation = settings.popup_heading %}{% endif %}{{ ly_translation }}</h3>
+          <p>{{ settings.popup_newsletter_description }}{% assign language = cart.attributes["language"] %}{% if language == nil %}{% assign language = shop.metafields["languages"]["default"] %}{% endif %}{% assign namespace = language | append: "as" %}{% if shop.metafields[namespace]["id2585710"] %}{% assign ly_translation = shop.metafields[namespace]["id2585710"] %}{% else %}{% assign ly_translation = settings.popup_newsletter_description %}{% endif %}{{ ly_translation }}</p>
+          {% include 'popup-form' %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</div>
+<script>
+  (function(e) {
+
+    var obj = {
+      init: function() {
+        try
+        {
+          if (e.cookie('popupNewsletter') != 'disable') {
+            this.checkboxEvent();
+            var pause = e('#newsletterModal').attr('data-pause');
+            setTimeout(function() {
+              e('#newsletterModal').modal('show');
+              
+             //  var date = new Date();
+              //var minutes = {{ settings.popup_newsletter_delay }};
+              //date.setTime(date.getTime() + (minutes * 60 * 1000));
+              e.cookie('popupNewsletter', 'disable', {expires:{{ settings.newsletter_popup_days }}, path:'/'});
+            }, pause);
+          }
+        }
+        catch (err) {} // ignore errors reading cookies
+      },
+      checkboxEvent: function() {
+        e('#checkBox').change(function(){
+          if (e(this).is(':checked')) {
+            e.cookie('popupNewsletter', 'disable', {expires:{{ settings.newsletter_popup_days }}, path:'/'});
+          } else {
+            e.cookie("popupNewsletter", null, { path: '/' });
+          }
+        });
+      }
+    };
+
+    e(document).ready(function() {
+      obj.init();
+    });
+
+  })(jQuery)
+  
+</script>
+{% endif %}
+{% endcomment %}
+
+{% if settings.popup_newsletter_show %}  
+<a id="login" href="#target"></a>
+<div style="display: none;">
+ <div id="target" class="nlpopup-div">
+   <div class="news-body input-text-btn">     
+     {% include 'popup-form' %}
+   </div>
+ </div>
+</div>  
+<script type="text/javascript">
+ function openNewsletterPopup() {
+  
+ setTimeout( function() {
+   $('#login').fancybox({maxWidth:{% if settings.newsletter_popup_max_width != blank %}{{ settings.newsletter_popup_max_width }}{% else %}630{% endif %}});
+   $('#login').trigger('click');
+ },
+            {% if settings.popup_newsletter_delay != blank %}{{ settings.popup_newsletter_delay }}{% else %}2{% endif %}*1000);
+ }
+
+ $(function() {
+   var popup = $.cookie('popup');
+   var cookie_enabled = true;
+
+   if (cookie_enabled && popup == 'open') {
+     return false;
+   } else {
+     openNewsletterPopup();
+   }
+     //var date = new Date();
+     //var minutes = {{ settings.popup_newsletter_delay }};
+    // date.setTime(date.getTime() + (minutes * 60 * 1000));
+     $.cookie('popup', 'open',
+              {
+       expires: {{ settings.newsletter_popup_days }} });
+
+              });
+
+</script>
+{% endif %}

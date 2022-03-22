@@ -1,0 +1,57 @@
+{% include 'banner-top' %}
+{% paginate collection.products by 12 %}
+<div class="container">
+
+  {% assign has_sidebar = false %}
+  {% if collection.all_tags.size > 0 %}
+  {% assign has_sidebar = true %}
+  {% endif %}
+
+  <div class="col-sm-12" style="padding:0;">
+    <div class="col-sm-3 sidebar" style="padding-left:0;">
+      {% include 'collection-sidebar' %}
+    </div>
+    <div class="col-sm-9 product_part" style="padding:0;">
+
+      {% comment %}
+      Different markup if description is set
+      {% endcomment %}
+      <header class="section-header">
+        <h1 class="section-header--title">{{ collection.title }}</h1>
+
+      </header>
+      <div class="section-header">
+        <div class="section-header--right">
+          {% include 'collection-sorting' %}
+          {% include 'collection-views' %}
+          {% include 'toggle-filters' %}
+        </div>
+      </div>
+
+      <div class="product-list">
+        {% for product in collection.products %}
+        {% include 'product-list-item' %}
+        {% else %}
+        <div class="grid-item">
+          <p>{{ 'collections.general.no_matches' | t }}</p>
+        </div>
+
+        {% endfor %}
+
+      </div>
+
+
+
+
+      {% if paginate.pages > 1 %}
+      <div class="padding">
+        <div class="toolbar toolbar-bottom">
+          <p class="page-total">  Showing: {{ paginate.current_offset | plus: 1 }}-{% if paginate.next %}{{ paginate.current_offset | plus: paginate.page_size }}{% else %}{{ paginate.items }}{% endif %} of {{ paginate.items }} </p>
+          {% include 'pagination-custom' %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endpaginate %}

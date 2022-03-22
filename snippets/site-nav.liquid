@@ -1,0 +1,113 @@
+<ul class="site-nav" id="accessibleNav">
+  {% unless linklists.main-menu.links.first.url == '/' %}
+  <li class="large--hide">
+    <a href="/">{{ 'general.breadcrumbs.home' | t }}</a>
+  </li>
+  {% endunless %}
+  {% for link in linklists.main-menu.links %}
+  {% assign child_list_handle = link.title | handleize %}
+  {% if linklists[child_list_handle].links != blank %}
+  <li class="site-nav--has-dropdown{% if link.active %} site-nav--active{% endif %}" aria-haspopup="true">
+    <a href="{{ link.url }}">
+      {{ link.title }}
+      <span class="icon-fallback-text">
+        <span class="icon icon-arrow-down" aria-hidden="true"></span>
+      </span>
+    </a>
+    <ul class="site-nav--dropdown">
+      {% for childlink in linklists[child_list_handle].links %}
+      <li {% if childlink.active %}class="site-nav--active"{% endif %}><a href="{{ childlink.url }}">{{ childlink.title | escape }}</a></li>
+      {% endfor %}
+    </ul>
+  </li>
+  {% else %}
+  <li {% if link.active %}class="site-nav--active"{% endif %}>
+    <a href="{{ link.url }}" class="site-nav__link">{{ link.title }}
+      {% if link.title == 'Women' %}
+      <span class="icon-fallback-text">
+        <span class="icon icon-arrow-down" aria-hidden="true"></span>
+      </span>
+      {% endif %}
+    </a>
+    {% if link.title == 'Men' %}
+    <div class="dropdown-menu">
+      <ul class="dropdown"> 
+
+        {% for link in linklists.men.links %}
+        <li class="site-nav--has-dropdown{% if link.active %} site-nav--active{% endif %}" aria-haspopup="true">
+          <a href="{{ link.url }}" class="site-navlink">
+            {{ link.title }}
+          </a>
+        </li>
+        {% endfor %}
+
+      </ul>
+    </div>
+    {% endif %}
+    {% if link.title == 'Women' %}
+    <!----******* static Megamenu  ********----->
+    <div class="dropdown-menu cat_dropdowm col-sm-12">
+      <div class="parent-mega-menu col-sm-8">
+        <div class="inner col-sm-4">
+          <a href="/collections/dresses"> <span>Dresses </span></a>
+          <ul class="dropdown_sub">
+            {% for link in linklists.dresses.links %}
+            <li>
+              <a href="{{ link.url }}">{{ link.title }}</a>
+            </li>
+            {% endfor %}
+          </ul>
+
+        </div>
+
+        <div class="inner col-sm-4">
+          <a href="/collections/sarees"> <span>Sarees</span></a>
+          <ul class="dropdown_sub">
+            {% for link in linklists.sarees.links %}
+            <li>
+              <a href="{{ link.url }}">{{ link.title }}</a>
+            </li>
+            {% endfor %}
+          </ul>
+
+        </div>
+
+        <div class="inner col-sm-4">
+          <a href="/collections/lehengas"> <span>lehengas </span></a>       
+          <ul class="dropdown_sub">
+            {% for link in linklists.lehengas.links %}
+            <li>
+              <a href="{{ link.url }}">{{ link.title }}</a>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+
+      </div>
+      <div class="sca-qv-image col-sm-4">
+
+        <div class="widget-featured-product">           
+          {% capture catalog %}blue.jpg{% endcapture %}
+          <img class="img-responsive lazyloaded" src="{{ catalog | asset_img_url: 'medium' }}" data-srcset="{{ catalog | asset_img_url: 'medium' }} ,{{ catalog | asset_img_url: 'small'  }}"> 
+        </div>
+
+      </div>
+    </div>
+    <!----******* End static Megamenu  ********----->
+    {% endif %}
+    {% include 'megamenu' %}
+  </li>
+  {% endif %}
+  {% endfor %}
+  {% if shop.customer_accounts_enabled %}
+  {% if customer %}
+  <li class="customer-navlink large--hide"><a href="/account">{{ 'layout.customer.view_account' | t }}</a></li>
+  <li class="customer-navlink large--hide">{{ 'layout.customer.log_out' | t | customer_logout_link }}</li>
+  {% else %}
+  <li class="customer-navlink large--hide">{{ 'layout.customer.sign_in' | t | customer_login_link }}</li>
+  <li class="customer-navlink large--hide">{{ 'layout.customer.create_account' | t | customer_register_link }}</li>
+  {% endif %}
+  {% endif %}
+
+
+</ul>

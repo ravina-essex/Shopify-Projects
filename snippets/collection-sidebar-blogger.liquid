@@ -1,0 +1,114 @@
+<ul class="side-nav" id="AccessibleNav">
+  {% for link in linklists.collection-sidebar.links %}
+  {% comment %}
+  Create a dropdown menu by naming a linklist the same as a link in the parent nav
+
+  More info on dropdowns:
+  - http://docs.shopify.com/manual/your-website/navigation/create-drop-down-menu
+  {% endcomment %}
+  {% assign child_list_handle = link.title | handleize %}
+
+  {% if linklists[child_list_handle].links != blank %}
+  {% capture active_link %} {% endcapture %}
+
+  {% for inner_link in linklists[child_list_handle].links %}
+  {% if inner_link.active %}
+  {% capture active_link %} active{% endcapture %}
+  {% endif %}
+  {% endfor %}
+
+  
+  {% capture active_link_child %} {% endcapture %}
+  {% for inner_link in linklists[child_list_handle].links %}
+  {% assign grand_child_list_handle = inner_link.title | handle %}
+  {% for grand_child_link in linklists[grand_child_list_handle].links %}
+  {% if grand_child_link.active %}
+  {% capture active_link_child %} active{% endcapture %}
+  {% endif %}
+  {% endfor %}
+  {% endfor %}
+  
+  
+  {% capture active_link_child_child %} {% endcapture %}
+  {% for inner_link in linklists[child_list_handle].links %}
+  {% assign grand_child_list_handle = inner_link.title | handle %}
+  {% for grand_child_link in linklists[grand_child_list_handle].links %}
+  {% assign grand_child_list_handle_1 = grand_child_link.title | handle %}
+  {% for grand_child_link1 in linklists[grand_child_list_handle_1].links %}
+  {% if grand_child_link1.active %}
+  {% capture active_link_child_child %} active{% endcapture %}
+  {% endif %}
+  {% endfor %}
+  {% endfor %}
+  {% endfor %}
+  
+
+  <li class="side_nav_dropdown {% if link.active %}active{% endif %} {{ active_link }} {{ active_link_child }} {{ active_link_child_child }}" aria-haspopup="true">
+    <a href="{{ link.url }}" class="sidenavlink">
+      {% comment %}ly_code_replace_for_[ link.title ]_begin{% endcomment %}{% include 'ly-title' with link %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+    </a>
+    <ul class="main_head">
+      {% for inner_link in linklists[child_list_handle].links %}
+      {% assign grand_child_list_handle = inner_link.title | handle %}
+      {% capture active_link_child %} {% endcapture %}
+      {% for grand_child_link in linklists[grand_child_list_handle].links %}
+      {% if grand_child_link.active %}
+      {% capture active_link_child %} active{% endcapture %}
+      {% endif %}
+      {% endfor %}
+
+      {% capture active_link_child_child %} {% endcapture %}
+      {% for grand_child_link in linklists[grand_child_list_handle].links %}
+      {% assign grand_child_list_handle_1 = grand_child_link.title | handle %}
+      {% for grand_child_link1 in linklists[grand_child_list_handle_1].links %}
+      {% if grand_child_link1.active %}
+      {% capture active_link_child_child %} active{% endcapture %}
+      {% endif %}
+      {% endfor %}
+      {% endfor %}
+      <li class="{% if inner_link.active %}active{% endif %} {{ active_link_child }} {{ active_link_child_child }} ">
+        <a href="{{ inner_link.url }}">{{ inner_link.title }}</a>
+        <ul>
+          {% for grand_child_link in linklists[grand_child_list_handle].links %}
+          {% assign grand_child_list_handle_1 = grand_child_link.title | handle %}
+          {% capture active_link_child_child %} {% endcapture %}
+          {% for grand_child_link1 in linklists[grand_child_list_handle_1].links %}
+          {% if grand_child_link1.active %}
+          {% capture active_link_child_child %} active{% endcapture %}
+          {% endif %}
+          {% endfor %}
+          <li class="{% if grand_child_link.active %}active{% endif %} {{ active_link_child_child }}" >
+            {{ grand_child_link.title | link_to: grand_child_link.url }}
+            <ul>
+              {% for grand_child_link1 in linklists[grand_child_list_handle_1].links %}
+              <li class="{% if grand_child_link1.active %}active{% endif %}">
+                {{ grand_child_link1.title | link_to: grand_child_link1.url }}
+              </li>
+              {% endfor %}
+            </ul>
+          </li>
+          {% endfor %}
+        </ul>
+      </li>
+      {% endfor %}
+    </ul>
+
+  </li>
+  {% else %}
+  <li {% if link.active %}class="active"{% endif %}>
+    <a href="{{ link.url }}">{% comment %}ly_code_replace_for_[ link.title ]_begin{% endcomment %}{% include 'ly-title' with link %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}</a>
+  </li>
+  {% endif %}
+  {% endfor %}
+
+</ul>
+
+<script>
+  $(document).ready(function(){
+    $('.heading_nav').click(function(){
+      $('.heading_nav').removeClass("active");
+      $(this).addClass("active");
+    });
+
+  });
+</script>

@@ -1,0 +1,134 @@
+<form action="/cart/add" method="post" enctype="multipart/form-data" id="addToCartForm">
+
+  <select name="id" id="productSelect" class="product-variants">
+    {% for variant in product.variants %}
+    {% if variant.available %}
+
+    <option {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %} data-sku="{{ variant.sku }}" value="{{ variant.id }}">{{ variant.title }} - {{ variant.price | money_with_currency }}</option>
+
+    {% else %}
+    <option disabled="disabled">
+      {{ variant.title }} - {{ 'products.product.sold_out' | t }}
+    </option>
+    {% endif %}
+    {% endfor %}
+  </select>
+  <div class="product-single__quantity{% unless settings.product_quantity_enable %} is-hidden{% endunless %}">
+    <label for="Quantity">{{ 'products.product.quantity' | t }}</label>
+    <input type="number" id="Quantity" name="quantity" value="1" min="1" class="quantity-selector">
+  </div>
+  {% comment %}
+  <!--quantity wise increment subtotal-->
+  <input type="text" id="output-value" value="{{ product.price | divided_by: 100 }}" disabled/>
+  <script>
+    //script add the qty of product than subtotal also increment 
+    var $output = $("#output-value");
+    $(".product-single__quantity input").bind('mouseup', function () {
+      var value = parseFloat($(this).val());
+      $output.val(value*{{ product.price | divided_by: 100 }});
+                  });
+  </script>
+  {% endcomment %}
+
+  {% comment %}
+  <!--display metafield with radio selector -->
+  <ul id="variants">
+    {% for variant in product.variants %}
+    <li class="rad">
+      {% if variant.available == true %}
+      <input type="radio" name="id" class="product-single__variants" value="{{ variant.id }}" id="{{ variant.id }}" data-sku="{{ variant.sku }}" {% if variant == product.selected_or_first_available_variant %} checked="checked" {%endif%} />
+      <i></i>
+      <label for="radio_{{variant.id}}" id="get_label">{{ variant.title }}</label>
+      {% else %}
+      <span>Sold Out! - {{ variant.title }}</span>
+      {% endif %}
+    </li>                  
+    {% endfor %}                 
+  </ul>
+  <ul class="non"> 
+    {% for v in product.variants %}
+    {% capture d %}{{ v.selected }}{% endcapture %}
+    <li data-id="{{ v.id }}" id="details{{ v.id }}" data-name="{{ v.id }}" data-title="{{ v.title }}">
+      {{ v.metafields.prd.msg }}
+    </li>  
+    {% endfor %}
+  </ul>
+
+  <script type="text/javascript">
+    $(".non li").hide();
+    $(".non li:first-child").show();
+    $("input[name=id]:radio").click(function() {
+      var test = $(this).val();
+
+      $(".non li").hide();
+      $(".non li:first-child").hide();
+      $("#details" + test).hide();
+      $("#details" + test).show();
+    });
+  </script>
+  <style>
+    .non > li{
+      display:none;
+    }
+  </style>
+  <!--over code -->
+  {% endcomment %}
+  <button type="submit" name="add" id="addToCart" class="btn">
+    <span class="icon icon-cart"></span>
+    <span id="addToCartText">{{ 'products.product.add_to_cart' | t }}</span>
+  </button>
+
+  {% comment %}
+  {% if template contains "product" %}
+  {% if customer and customer.id != blank %}{% comment %}Allows logged in customer create and retrieve wishlist using their account{% endcomment %}
+  <div class="wishlist-pro-wrapper"></div>
+  <script type="text/javascript">
+    var cus_wishlist_pro = {
+      id: {{ customer.id }},
+      email: "{{ customer.email }}",
+      first_name: "{{ customer.first_name }}",
+      shopify_domain: "{{ shop.permanent_domain }}",
+      product_id: {{ product.id }},
+      product_variant_id: {{ product.variants.first.id }},
+      product_image_url:"{{ product.images.first | img_url: "medium" }}",
+      api_version: "1.0"
+    };
+  </script>
+
+  <script type="text/template" id='wishlist-pro-wrapper'>
+      <% if ( wishlists.is_shop_active == false ) { %>
+      <% } else if( wishlists.customer_present == false){ %>
+            <a href="#" class="add-to-wishlist"><i class="fa fa-heart-o"></i> <span>Add to Wishlist</span></a>
+       <% } else { %>
+        	<% if ( wishlists.items=="" ) { %>
+        		<a href="#" class="add-to-wishlist"><i class="fa fa-heart-o"></i> <span>Add to Wishlist</span></a>
+       		<% } else { %>
+                <ul><li>               
+                <ul>
+        			<% _.each(wishlists.items,function(item,key,list){ %>
+                         <% if ( item.has_items ) { %>
+                   			<li id="<%= item.id %>" class='in_wl'><i class='fa fa-heart'></i>In your Wishlist</li>
+                         <% } else { %>
+                            <li id="<%= item.id %>" class='not_in_wl'><i class='fa fa-heart-o'></i>Add To Wishlist</li>
+                         <% } %>
+                    <% }); %>
+    </ul>
+    </li></ul>
+       		<% } %>
+       <% } %>
+
+  </script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+  <script type="text/javascript">!function(){function t(){e=window.jQuery.noConflict(!0),i()}function i(){e(document).ready(function(t){var i=s+"/wishlist/load_snippet?callback=?";t.getJSON(i,cus_wishlist_pro,function(i){var e=_.template(t("#wishlist-pro-wrapper").html());t(".wishlist-pro-wrapper").html(e({wishlists:i.wishlists}))}),t(document).on("click",".add-to-wishlist",function(){return this_item=t(this),this_item.find("i").removeClass("fa-heart-o"),this_item.find("i").addClass("fa-refresh fa-spin"),t.getJSON(s+"/wishlist/add_to_wish_list?callback=?",cus_wishlist_pro,function(t){"done"==t.msg&&(this_item.removeClass("add-to-wishlist"),this_item.addClass("in_items"),this_item.find("i").removeClass("fa-refresh fa-spin").addClass("fa-heart"))}),!1}),t(document).on("click",".not_in_wl",function(){return this_item=t(this),item_id=this_item.attr("id"),this_item.find("i").removeClass("fa-heart-o"),this_item.find("i").addClass("fa-refresh fa-spin"),cus_wishlist_pro.item_id=item_id,t.getJSON(s+"/wishlist/add_to_wish_list_with_item?callback=?",cus_wishlist_pro,function(t){"done"==t.msg&&(this_item.removeClass("not_in_wl"),this_item.addClass("in_wl"),this_item.find("i").removeClass("fa-refresh fa-spin").addClass("fa-heart"))}),!1}),t(document).on("click",".in_items , .in_wl",function(i){var e=t(this).attr("id");""==e?document.cookie="wlpro= ;path=/":document.cookie="wlpro="+e+";path=/",window.location.href="/pages/wishlist-pro",i.preventDefault()})})}var e,s="https://wishlistpro.microapps.com";if(void 0===window.jQuery){var a=document.createElement("script");a.setAttribute("type","text/javascript"),a.setAttribute("src","http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"),a.readyState?a.onreadystatechange=function(){("complete"==this.readyState||"loaded"==this.readyState)&&t()}:a.onload=t,(document.getElementsByTagName("head")[0]||document.documentElement).appendChild(a)}else e=window.jQuery,i()}();</script>
+  {% else %}
+  <div class="wishlist-pro-wrapper"><ul><li><a href="/account" class="in_items"><i class="fa fa-heart-o"></i> <span>Add To Wishlist</span></a></li></ul></div>
+  {% endif %}
+  {% endif %}
+  {% endcomment %}
+
+  {% include 'wishl-wishlist' %} 
+
+  {% if settings.product_quantity_message %}
+  <span id="variantQuantity" class="variant-quantity"></span>
+  {% endif %}
+</form>

@@ -1,0 +1,51 @@
+{% comment %}ly_global_begin{% endcomment %}{% include 'ly-global' %}{% comment %}ly_global_end{% endcomment %}
+<div class="blog">
+  <div class="clear"></div>
+  <div class="col-sm-12">
+    <ul class="blog-content">
+      {% for article in blogs[settings.sidebar_blog].articles limit:settings.blog_limit %}
+      <li class="article">
+        {% comment %}
+        Add a surrounding div with class 'rte' to anything that will come from the rich text editor.
+        Since this is just a listing page, you can either use the excerpt or truncate the full article.
+        {% endcomment %}
+        <div class="rte">
+          <div class="article-image artcle-hvr">
+            
+             {% assign image_alt = article.title | escape %}
+            <p>{{ article | img_url: 'large' | img_tag: image_alt, 'article__image' | link_to: article.url }}</p>
+            
+          </div>
+          {% comment %}
+          <ul class="article-info list-inline">
+            <li class="article-date">
+              <i class="fa fa-calendar"></i>
+              <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: format: 'month_day_year' }}</time>
+              {% comment %}
+              <span class="meta-sep">•</span>
+              {{ article.author }}
+              {% endcomment %}
+            </li>
+            <li class="article-author"><i class="fa fa-user"></i>{{ article.author }}</li>
+            {% comment %}
+            <li class="article-comment">
+              <a href="{{ article.comment_post_url }}">
+                <i class="fa fa-comments-o"></i>  <span>{{ article.comments_count }}</span> Comment(s)
+              </a>
+            </li>
+            {% endcomment %}
+          </ul>
+          <div class="article-content">{% comment %}ly_code_replace_for_[ article.content | strip_html | truncatewords: 100 ]_begin{% endcomment %}{% include 'ly-content' with article %}{{ ly_translation | strip_html | truncatewords: 100 }}{% comment %}ly_code_replace_end{% endcomment %}</div>
+          {% endcomment %}	
+        </div>
+        <div class="blog-title">	
+          <h2 class="article-name"><a href="{{ article.url }}">{% comment %}ly_code_replace_for_[ article.title ]_begin{% endcomment %}{% include 'ly-title' with article %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}</a></h2>
+        </div>
+        {% comment %}
+        <p class="read_more"><a href="{{ article.url }}">{% comment %}ly_i18n_replace_for_[ 'blogs.article.read_more' | t ]_begin{% endcomment %}{% capture ly_template %}{{ 'blogs.article.read_more' | t }}{% endcapture %}{% include 'ly-static-string' with '2585628' %}{% if ly_translation %}{% assign escape_content = true %}{% assign ly_template = ly_translation %}{% else %}{% assign escape_content = false %}{% endif %}{% if escape_content %}{{ ly_template | escape}}{% else %}{{ ly_template }}{% endif %}{% comment %}ly_i18n_replace_end{% endcomment %}→</a></p>
+        {% endcomment %}
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>

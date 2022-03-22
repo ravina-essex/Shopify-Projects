@@ -1,0 +1,121 @@
+{% layout none %}<?xml version="1.0"?>
+<rss xmlns:g="http://base.google.com/ns/1.0" version="2.0">
+  {% paginate collection.products by 1000 %}
+  {% assign useSEOtitle = false %}
+  {% assign useSEOdescription = false %}
+  {% assign CountryCode = 'US' %}
+  {% if shop.currency == 'CAD' %}{% assign CountryCode = 'CA' %}{% endif %}
+  {% assign Color = "" %}
+  {% assign Size = "" %}
+  <channel>
+    <title>{{ shop.name }} {{ collection.title | strip_html | strip_newlines | replace: '&', '&amp;' }}</title>
+    <link>{{ shop.url }}</link>
+  <description>{{ collection.description | strip_html | strip_newlines | replace: '&', '&amp;' }}</description>
+  {% for product in collection.products %}
+  {% assign GoogleProductCategory = product.metafields.google.google_product_type %}
+  {% assign Gender = product.metafields.google.gender %}
+  {% assign AgeGroup = product.metafields.google.age_group %}
+  {% assign samemodel = product.metafields.number.m_number %}
+
+  {% for variant in product.variants %}
+  {% assign Color = "" %}
+  {% assign Size = "" %}
+  {% for option in product.options %}
+  {% if option == 'Color' %}{% capture Color %}{{ variant.options[forloop.index0] }}{% endcapture %}
+  {% elsif option == 'Size' %}{% capture Size %}{{ variant.options[forloop.index0] }}{% endcapture %}
+  {% endif %}
+  {% endfor %}
+  {% endfor %}
+
+  {% capture productTitle %}{{ product.vendor }} {{ product.title }} {% endcapture %}
+  {% if useSEOtitle and product.metafields.global.title_tag.size > 0 %}{% assign productTitle = product.metafields.global.title_tag %}{% endif %}
+  {% assign productDescription = product.description %}
+  {% if useSEOdescription and product.metafields.global.description_tag.size > 0 %}{% assign productDescription = product.metafields.global.description_tag %}{% endif %}
+
+  <item>
+    <title>{{ productTitle | replace: '&', '&amp;' }}</title>
+    <link>{{ shop.url }}{{ variant.url }}</link>
+  <description>{{ productDescription | strip_html | strip_newlines | replace: '&', '&amp;' }} 
+{% comment %}
+{% for option in product.options_with_values %}
+    {{ option.name }}: 
+    {% for value in option.values %}
+    {{ value }}
+
+    {% endfor %}
+    {% endfor %}
+    {% endcomment %}
+    {% for variant in product.variants %}
+    {% for option in variant.options %}
+    {{ product.options[forloop.index0] }}: {{ option }}
+    {% endfor %}
+    {% endfor %}
+
+    Model:{% if samemodel != blank %}{{ samemodel }} {% else %} {{ product.id }}{% endif %}
+     {% assign current_variant = product.selected_or_first_available_variant %}
+   
+    {% comment %}
+    {% for variant in product.variants %}
+    {% for option in variant.options %}
+    {{ variant.sku }}
+    {% endfor %}
+    {% endfor %}
+    {% endcomment %}
+    {% for variant in product.variants %} 
+    {% for option in variant.options %}
+      {% if product.options[forloop.index0] == 'Size' %}{{ option | append: ',' }} {% endif %}
+       {% endfor %}
+     {% endfor %}
+      {% for variant in product.variants %} 
+    {% for option in variant.options %}
+      {% if product.options[forloop.index0] == 'Color' %}{{ option | append: ',' }} {% endif %}
+      {% endfor %}
+     {% endfor %}
+  </description>
+
+  <g:google_product_category>{{ GoogleProductCategory | replace: '&', '&amp;' }}</g:google_product_category>
+  <g:item_group_id>shopify_{{ CountryCode }}_{{ product.id }}</g:item_group_id>
+  <g:model>{% if samemodel != blank %}{{ samemodel }} {% else %} {{ product.id }}{% endif %}</g:model>
+  <g:variants>
+    {% for variant in product.variants %}
+    {% for option in variant.options %}
+    {{ product.options[forloop.index0] }}: {{ option }}
+    {% endfor %}
+    {% endfor %}
+    </g:variants>
+  <g:size_system>US</g:size_system>
+  <g:id>shopify_{{ CountryCode }}_{{ product.id }}_{{ variant.id }}</g:id>
+  <g:link>{{ shop.url }}{{ product.url }}</g:link>
+  <g:condition>new</g:condition>
+  <g:price>{{ product.price }} {{ shop.currency }}</g:price>
+  <g:availability>{% if variant.available %}in stock{% else %}out of stock{% endif %}</g:availability>
+  <g:image_link>http:{% if variant.image.src %}{{ variant.image.src | product_img_url: 'grande' }}{% else %}{{ product.featured_image.src | product_img_url: 'grande' }}{% endif %}</g:image_link>
+  <g:gtin>{{ current_variant.barcode }}</g:gtin>
+  <g:brand>{{ product.vendor }}</g:brand>
+  <g:mpn>{{ current_variant.sku }} </g:mpn>
+  <g:product_type>{{ product.type }}</g:product_type>
+  <g:gender>{{ Gender }}</g:gender>
+  <g:age_group>{{ AgeGroup }}</g:age_group>
+    <g:size>{% for variant in product.variants %} 
+    {% for option in variant.options %}
+      {% if product.options[forloop.index0] == 'Size' %}{{ option | append: ',' }} {% endif %}
+      {% endfor %}
+     {% endfor %}</g:size>
+ <g:color>{% for variant in product.variants %} 
+    {% for option in variant.options %}
+      {% if product.options[forloop.index0] == 'Color' %}{{ option | append: ',' }} {% endif %}
+      {% endfor %}
+     {% endfor %}</g:color>
+      <g:custom_label_0>{{ product.metafields.google.custom_label_0 }}</g:custom_label_0>
+  <g:custom_label_1>{{ product.metafields.google.custom_label_1 }}</g:custom_label_1>
+  <g:custom_label_2>{{ product.metafields.google.custom_label_2 }}</g:custom_label_2>
+  <g:custom_label_3>{{ product.metafields.google.custom_label_3 }}</g:custom_label_3>
+  <g:custom_label_4>{{ product.metafields.google.custom_label_4 }}</g:custom_label_4>
+
+  <g:shipping_weight>{{ variant.weight | weight_with_unit }}</g:shipping_weight>
+  </item>
+
+{% endfor %}
+</channel>
+</rss>
+{% endpaginate %}

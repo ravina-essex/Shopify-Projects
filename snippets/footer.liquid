@@ -1,0 +1,205 @@
+<div class="wrapper">
+  <div class="container">
+    <div class="grid">
+      <div class="col-sm-2">            
+        <h3>Shop</h3>
+        <ul class="ftr_menu">
+          {% for collection in collections limit:6 %}
+          <li><a href="{{ collection.url }}">{{ collection.title }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      {% if settings.footer_quicklinks_enable %}
+      <div class="col-sm-2">
+        <h3>{{ 'layout.footer.quick_links' | t }}</h3>
+        <ul class="ftr_menu">
+          {% for link in linklists[settings.footer_quicklinks_linklist].links %}
+          <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+          {% else %}
+          {% capture theme_settings_footer_linklist_path %}<strong>Footer</strong> > <strong>Quick links link list</strong>{% endcapture %}
+          {{ 'layout.footer.instructions_for_linklist_html' | t: theme_settings_link: theme_settings_link, theme_settings_footer_linklist_path: theme_settings_footer_linklist_path }}
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      {% if settings.footer_content_enable or settings.footer_social_enable %}
+      <div class="col-sm-4 footer-top">
+        <h3>{{ 'layout.footer.get_in_touch' | t }}</h3>
+        {% if settings.footer_content_enable %}
+        {% comment %}
+        <p>
+          {% if settings.footer_content_text != blank %}
+          {{ settings.footer_content_text }}
+          {% else %}
+          {{ 'layout.footer.instructions_for_text_content_html' | t: theme_settings_link: theme_settings_link }}
+          {% endif %}
+        </p>
+        {% endcomment %}
+        {% endif %}
+        {% if settings.footer_social_enable %}
+        <ul class="inline-list social-icons social">
+          {% if settings.social_twitter_link != blank %}
+          <li class="twitter">
+            <a target="_blank" class="fadeInUp" href="{{ settings.social_twitter_link }}" title="{{ 'layout.footer.store_on_social_network' | t: store_name: shop.name, social_network: 'Twitter' | escape }}">
+             <i class="fa fa-twitter" aria-hidden="true"></i>
+
+            </a>
+          </li>
+          {% endif %}
+          {% if settings.social_facebook_link != blank %}
+          <li class="facebook">
+            <a target="_blank" class="fadeInUp" href="{{ settings.social_facebook_link }}" title="{{ 'layout.footer.store_on_social_network' | t: store_name: shop.name, social_network: 'Facebook' | escape }}">
+               <i class="fa fa-facebook" aria-hidden="true"></i>
+
+            </a>
+          </li>
+          {% endif %}
+          {% if settings.social_pinterest_link != blank %}
+          <li class="pinterest">
+            <a target="_blank" class="fadeInUp" href="{{ settings.social_pinterest_link }}" title="{{ 'layout.footer.store_on_social_network' | t: store_name: shop.name, social_network: 'Pinterest' | escape }}">
+              <i class="fa fa-pinterest-p" aria-hidden="true"></i>
+
+            </a>
+          </li>
+          {% endif %}
+          {% if settings.social_google_plus_link != blank %}
+          <li class="google">
+            <a target="_blank" class="fadeInUp" href="{{ settings.social_google_plus_link }}" title="{{ 'layout.footer.store_on_social_network' | t: store_name: shop.name, social_network: 'Google' | escape }}" rel="publisher">
+             <i class="fa fa-google-plus" aria-hidden="true"></i>
+
+            </a>
+          </li>
+          {% endif %}
+          {% if settings.social_instagram_link != blank %}
+          <li class="instagram">
+            <a target="_blank" class="fadeInUp" href="{{ settings.social_instagram_link }}" title="{{ 'layout.footer.store_on_social_network' | t: store_name: shop.name, social_network: 'Instagram' | escape }}">
+             <span class="fallback-text">Instagram</span>
+            </a>
+          </li>
+          {% endif %}
+          {% if settings.social_tumblr_link != blank %}
+          <li>
+            <a class="icon-fallback-text" href="{{ settings.social_tumblr_link }}" title="{{ 'layout.footer.store_on_social_network' | t: store_name: shop.name, social_network: 'Tumblr' | escape }}">
+              <span class="icon icon-tumblr" aria-hidden="true"></span>
+              <span class="fallback-text">Tumblr</span>
+            </a>
+          </li>
+          {% endif %}
+          {% if settings.social_youtube_link != blank %}
+          <li>
+            <a class="icon-fallback-text" href="{{ settings.social_youtube_link }}" title="{{ 'layout.footer.store_on_social_network' | t: store_name: shop.name, social_network: 'YouTube' | escape }}">
+              <span class="icon icon-youtube" aria-hidden="true"></span>
+              <span class="fallback-text">YouTube</span>
+            </a>
+          </li>
+          {% endif %}
+          {% if settings.social_vimeo_link != blank %}
+          <li>
+            <a class="icon-fallback-text" href="{{ settings.social_vimeo_link }}" title="{{ 'layout.footer.store_on_social_network' | t: store_name: shop.name, social_network: 'Vimeo' | escape }}">
+              <span class="icon icon-vimeo" aria-hidden="true"></span>
+              <span class="fallback-text">Vimeo</span>
+            </a>
+          </li>
+          {% endif %}
+          {% if settings.social_fancy_link != blank %}
+          <li>
+            <a class="icon-fallback-text" href="{{ settings.social_fancy_link }}" title="{{ 'layout.footer.store_on_social_network' | t: store_name: shop.name, social_network: 'Fancy' | escape }}">
+              <span class="icon icon-fancy" aria-hidden="true"></span>
+              <span class="fallback-text">Fancy</span>
+            </a>
+          </li>
+          {% endif %}
+        </ul>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      {% if settings.footer_newsletter_enable %}
+      <div class="col-sm-3">
+        <h3>{{ 'layout.footer.newsletter_title' | t }}</h3>
+        {% include 'newsletter-form' %}
+      </div>
+      {% endif %}
+    </div>
+
+    <hr class="hr--small">
+
+    <div class="grid">
+        {% if settings.footer_legallinks_enable %}
+        <ul class="legal-links inline-list">
+          {% for link in linklists[settings.footer_legallinks_linklist].links %}
+          <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+        <ul class="legal-links inline-list">
+          <li>
+            &copy; {{ 'now' | date: "%Y" }} {{ shop.name | link_to: '/' }}
+          </li>
+          {% comment %}
+          <li>
+            {{ powered_by_link }}
+          </li>
+          {% endcomment %}
+        </ul>
+      {% comment %}
+      {% unless shop.enabled_payment_types == empty %}
+      <div class="grid-item large--three-fifths large--text-right">
+        <ul class="inline-list payment-icons">
+          {% for type in shop.enabled_payment_types %}
+          <li>
+            <span class="icon-fallback-text">
+              <span class="icon icon-{{ type }}" aria-hidden="true"></span>
+              <span class="fallback-text">{{ type | replace: '_',' ' }}</span>
+            </span>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endunless %}
+      {% endcomment %}
+    </div>
+               
+          
+  </div>
+</div>
+<style>
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    -webkit-transform: translate3d(0, 20%, 0);
+    transform: translate3d(0, 32%, 0);
+  }
+
+  100% {
+    opacity: 1;
+    -webkit-transform: none;
+    transform: none;
+  }
+}
+.fadeInUp {
+    -webkit-transition: all 300ms ease;
+    -moz-transition:    all 300ms ease;
+    -o-transition:      all 300ms ease;
+    -ms-transition:     all 300ms ease;
+    transition:         all 300ms ease;
+    -webkit-transform:  translate(0,10px);
+    -moz-transform:     translate(0,10px);
+    -o-transform:       translate(0,10px);
+    -ms-transform:      translate(0,10px);
+    transform:          translate(0,10px);
+    opacity: 1;
+
+}
+
+.fadeInUp:hover {
+    -webkit-transform:  translate(0,0);
+    -moz-transform:     translate(0,0);
+    -o-transform:       translate(0,0);
+    -ms-transform:      translate(0,0);
+    transform:          translate(0,0);
+    opacity: 1;
+}
+</style>

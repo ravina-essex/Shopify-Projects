@@ -1,0 +1,119 @@
+{% unless grid_item_width %}
+{% assign grid_item_width = 'large--one-third medium-down--one-half' %}
+{% endunless %}
+
+{% unless current_collection == blank %}
+{% assign current_collection = collection %}
+{% endunless %}
+
+{% assign on_sale = false %}
+{% assign sale_text = 'products.product.sale' | t %}
+{% if product.compare_at_price > product.price %}
+{% assign on_sale = true %}
+{% endif %}
+
+{% assign sold_out = true %}
+{% assign sold_out_text = 'products.product.sold_out' | t %}
+{% if product.available %}
+{% assign sold_out = false %}
+{% endif %}
+
+<div class="item"> 
+  <div class="product-top product-hover">
+    <a href="{{ product.url | within: collection }}">
+      <div class="product-thumb">
+        {% if on_sale and settings.collections_show_sale_circle %}
+        <span class="badge badge--sale">
+          <span class="badge__text{% if sale_text.size > 7 %} badge__text--small{% endif %}">{{ 'products.product.sale' | t }}</span>
+        </span>
+        {% endif %}
+        {% if sold_out and settings.collections_show_sold_out_circle %}
+        <span class="badge badge--sold-out">
+          <span class="badge__text{% if sold_out_text.size > 9 %} badge__text--small{% endif %}">{{ 'products.product.sold_out' | t }}</span>
+        </span>
+        {% endif %}
+        {% assign featured_image = product.selected_or_first_available_variant.featured_image | default: product.featured_image %}
+        <img src="{{ featured_image | img_url: '1024x1024' }}" alt="{{ featured_image.alt | escape }}" id="ProductPhotoImg"{% if settings.product_image_zoom_type == 'zoom-in' %} data-zoom="{{ featured_image | img_url: '1024x1024' }}"{% endif %} data-image-id="{{ featured_image.id }}">
+        <span class="product-additional">
+          <img src="{{ product.images[1] | product_img_url: 'medium' }}"> 
+        </span>
+        <div class="hover"></div>
+      </div>
+      <div class="image-overlay">
+        <form action="/cart/add" method="post" enctype="multipart/form-data" id="addToCartForm">
+          {% include 'wishl-wishlist', wishl_adder: 'atomic_with' %}
+
+          {% comment %}
+          <div class="js-wish-list">
+            {% if customer %}                  
+            {% assign value = product.selected_or_first_available_variant.id %}
+            {% capture productID %}{{ product.selected_or_first_available_variant.id }}{% endcapture %}
+            {% for tag in customer.tags %}
+            {% capture tagID %}{{ tag }}{% endcapture %}
+            {% if tagID contains productID %}
+            {% capture value %}x{{ tagID }}{% endcapture %}
+            {% endif %}
+            {% if value.size == 0 %}{% assign value = productID %}{% endif %}
+            {% endfor %}
+
+            {% unless value.size == 0 %}
+            {% capture check %}{{ value.size | minus:productID.size | money_without_currency | times:100 | divided_by:2 }}{% endcapture %}
+            {% assign check = check | split:'.' %}
+            {% if check[1] contains "5" %}{% assign display = false %}{% else %}{% assign display = true %}{% endif %}
+            {% endunless %}
+
+            {% if display %}
+            <form accept-charset="UTF-8" id="wish-list" action="/contact" class="contact-form" method="post">
+              <input name="form_type" type="hidden" value="customer">
+              <input name="utf8" type="hidden" value="✓">
+              <input type="hidden" name="contact[email]" value="{{ customer.email }}"/>
+              <input id="update-me" type="hidden" name="contact[tags]" value="{{ value }}" />
+              <button type="submit"><i class="fa fa-heart-o"></i></button>
+            </form>
+            {% else %}
+            <a href="/pages/wishlist"><i class="fa fa-heart"></i><div class="prdct_wish_dtl">This product is in your Wishlist</div></a>
+            {% endif %}                  
+            {% else %}
+            <a class="wishlist" href="javascript:void(0)"><i class="fa fa-heart-o"></i></a>
+
+            <script>
+              $('.wishlist').click(function() {
+                {% if customer %}
+                $('#wish-list').submit();
+                {% else %}
+                window.location.href='/account';
+                {% endif %}
+              });
+            </script>
+            {% endif %}
+
+          </div>
+          {% endcomment %}
+          <div class="action">
+            <a class="btn hvr-trim" href="{{ product.url | within: collection }}">Select Option</a>
+          </div>
+        </form>
+        <div class="quickview-button">
+          <a class="quick-view-text quick_shop hvr-round-corners" title="Quick View" id="copy-of-sample-product8" data-fancybox-href="#{{ product.id }}" data-gallery="product-{{ product.id }}-gallery">Quick view</a>
+          {% include 'modal' %}
+        </div>
+      </div>
+    </a>
+  </div>
+  <div class="product-bottom">
+    <a class="product-title" href="{{ product.url | within: collection }}">{{ product.title }}</a>
+    {% comment %}
+    <p class="grid-link__title grid-link__vendor">{{ product.vendor }}</p>
+    {% endcomment %}
+    <span class="price-box">
+      {% capture price %}{{ product.price | money }}{% endcapture %}
+
+      {% if product.price_varies %}
+      {{ 'products.general.from_html' | t: price: price }}
+      {% else %}
+      {{ price }}
+      {% endif %}
+    </span>
+  </div>
+</div>
+

@@ -1,0 +1,353 @@
+{% comment %}ly_global_begin{% endcomment %}{% include 'ly-global' %}{% comment %}ly_global_end{% endcomment %}
+{% comment %}ly_static_code_begin{% endcomment %}{% capture ly_content %}{% comment %}ly_static_code_end{% endcomment %}
+
+
+
+<!doctype html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"{% comment %}ly_dir_replace_for_[]_begin{% endcomment %}{% assign language = cart.attributes["language"] %}{% if language == nil %}{% assign language = shop.metafields["languages"]["default"] %}{% endif %}{% if shop.metafields.languages_dir[language] == 'rtl' %} dir="rtl" {% endif %}{% comment %}ly_dir_replace_end{% endcomment %}> <![endif]-->
+<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8" lang="en"{% comment %}ly_dir_replace_for_[]_begin{% endcomment %}{% assign language = cart.attributes["language"] %}{% if language == nil %}{% assign language = shop.metafields["languages"]["default"] %}{% endif %}{% if shop.metafields.languages_dir[language] == 'rtl' %} dir="rtl" {% endif %}{% comment %}ly_dir_replace_end{% endcomment %}> <![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en"{% comment %}ly_dir_replace_for_[]_begin{% endcomment %}{% assign language = cart.attributes["language"] %}{% if language == nil %}{% assign language = shop.metafields["languages"]["default"] %}{% endif %}{% if shop.metafields.languages_dir[language] == 'rtl' %} dir="rtl" {% endif %}{% comment %}ly_dir_replace_end{% endcomment %}> <![endif]-->
+<!--[if IE 9 ]><html class="ie9 no-js"{% comment %}ly_dir_replace_for_[]_begin{% endcomment %}{% assign language = cart.attributes["language"] %}{% if language == nil %}{% assign language = shop.metafields["languages"]["default"] %}{% endif %}{% if shop.metafields.languages_dir[language] == 'rtl' %} dir="rtl" {% endif %}{% comment %}ly_dir_replace_end{% endcomment %}> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html class="no-js"{% comment %}ly_dir_replace_for_[]_begin{% endcomment %}{% assign language = cart.attributes["language"] %}{% if language == nil %}{% assign language = shop.metafields["languages"]["default"] %}{% endif %}{% if shop.metafields.languages_dir[language] == 'rtl' %} dir="rtl" {% endif %}{% comment %}ly_dir_replace_end{% endcomment %}> <!--<![endif]-->
+<head>
+
+  <!-- Basic page needs ================================================== -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  {% if settings.favicon_enable %}
+  <link rel="shortcut icon" href="{% comment %}ly_asset_replace_for_[ 'favicon.png' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'favicon.png' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}" type="image/png" />
+  {% endif %}
+
+  <!-- Title and description ================================================== -->
+  <title>
+    {{ langify_title }}{% if current_tags %}{% assign meta_tags = current_tags | join: ', ' %} &ndash; {% comment %}ly_i18n_replace_for_[ 'general.meta.tags' | t: tags: meta_tags ]_begin{% endcomment %}{% capture ly_template %}{{ 'general.meta.tags' | t: tags: meta_tags }}{% endcapture %}{% include 'ly-static-string' with '2585620' %}{% if ly_translation %}{% assign escape_content = true %}{% assign ly_template = ly_translation %}{% else %}{% assign escape_content = false %}{% endif %}{% assign replacement = meta_tags  %}{% assign ly_template = ly_template | replace: '[[tags]]', replacement %}{% if escape_content %}{{ ly_template | escape}}{% else %}{{ ly_template }}{% endif %}{% comment %}ly_i18n_replace_end{% endcomment %}{% endif %}{% if current_page != 1 %} &ndash; {% comment %}ly_i18n_replace_for_[ 'general.meta.page' | t: page: current_page ]_begin{% endcomment %}{% capture ly_template %}{{ 'general.meta.page' | t: page: current_page }}{% endcapture %}{% include 'ly-static-string' with '2585622' %}{% if ly_translation %}{% assign escape_content = true %}{% assign ly_template = ly_translation %}{% else %}{% assign escape_content = false %}{% endif %}{% assign replacement = current_page  %}{% assign ly_template = ly_template | replace: '[[page]]', replacement %}{% if escape_content %}{{ ly_template | escape}}{% else %}{{ ly_template }}{% endif %}{% comment %}ly_i18n_replace_end{% endcomment %}{% endif %}{% unless langify_title contains langify_shop_name %} &ndash; {{ langify_shop_name }}{% endunless %}
+  </title>
+
+  {% if langify_description %}
+  <meta name="description" content="{{ langify_description | escape }}">
+  {% endif %}
+
+  <!-- Social meta ================================================== -->
+  {% include 'social-meta-tags' %}
+
+  <!-- Helpers ================================================== -->
+  <link rel="canonical" href="{{ canonical_url }}">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="{{ settings.color_primary }}">
+  <!-- CSS ================================================== -->
+  {% comment %}ly_asset_replace_for_[ 'timber.scss.css' | asset_url | stylesheet_tag ]_begin{% endcomment %}{% assign ly_asset = 'timber.scss.css' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  | stylesheet_tag }}{% comment %}ly_asset_replace_end{% endcomment %}
+  {% comment %}ly_asset_replace_for_[ 'theme.scss.css' | asset_url | stylesheet_tag ]_begin{% endcomment %}{% assign ly_asset = 'theme.scss.css' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  | stylesheet_tag }}{% comment %}ly_asset_replace_end{% endcomment %}  
+  {% comment %}ly_asset_replace_for_[ 'bootstrap.min.css' | asset_url | stylesheet_tag ]_begin{% endcomment %}{% assign ly_asset = 'bootstrap.min.css' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  | stylesheet_tag }}{% comment %}ly_asset_replace_end{% endcomment %}
+  {% comment %}ly_asset_replace_for_[ 'owl.carousel.css' | asset_url | stylesheet_tag ]_begin{% endcomment %}{% assign ly_asset = 'owl.carousel.css' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  | stylesheet_tag }}{% comment %}ly_asset_replace_end{% endcomment %}
+  {% comment %}ly_asset_replace_for_[ 'stylesheet.css' | asset_url | stylesheet_tag ]_begin{% endcomment %}{% assign ly_asset = 'stylesheet.css' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  | stylesheet_tag }}{% comment %}ly_asset_replace_end{% endcomment %}
+  {% comment %}ly_asset_replace_for_[ 'responsive.css' | asset_url | stylesheet_tag ]_begin{% endcomment %}{% assign ly_asset = 'responsive.css' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  | stylesheet_tag }}{% comment %}ly_asset_replace_end{% endcomment %}
+  {% comment %}ly_asset_replace_for_[ 'slick.css' | asset_url | stylesheet_tag ]_begin{% endcomment %}{% assign ly_asset = 'slick.css' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  | stylesheet_tag }}{% comment %}ly_asset_replace_end{% endcomment %}
+  {% comment %}ly_asset_replace_for_[ 'jquery.fancybox.css' | asset_url | stylesheet_tag ]_begin{% endcomment %}{% assign ly_asset = 'jquery.fancybox.css' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  | stylesheet_tag }}{% comment %}ly_asset_replace_end{% endcomment %}
+
+  {% include 'google-fonts' %}
+  {{ 'https://fonts.googleapis.com/css?family=Roboto:300,400,500' | stylesheet_tag }} 
+  {{ 'https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css' | stylesheet_tag }}
+  <link href="https://fonts.googleapis.com/css?family=Neucha" rel="stylesheet"> 
+
+  <!-- Header hook for plugins ================================================== -->
+  {{ content_for_header }}
+
+  {% include 'oldIE-js' %}
+
+  {{ '//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js' | script_tag }}
+  {% comment %}ly_asset_replace_for_[ 'modernizr.min.js' | asset_url | script_tag ]_begin{% endcomment %}{% assign ly_asset = 'modernizr.min.js' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  | script_tag }}{% comment %}ly_asset_replace_end{% endcomment %}
+  {% comment %}ly_asset_replace_for_[ 'wish-list.js' | asset_url | script_tag ]_begin{% endcomment %}{% assign ly_asset = 'wish-list.js' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  | script_tag }}{% comment %}ly_asset_replace_end{% endcomment %}
+  {% comment %}
+  If you store has customer accounts disabled, you can remove the following JS file
+  {% endcomment %}
+  {% if template contains 'customers' %}
+  {{ 'shopify_common.js' | shopify_asset_url | script_tag }}
+  {% endif %}
+
+  {% include 'sca-quick-view-init' %}
+
+  {% comment %}ly_asset_replace_for_[ 'font-awesome.css'| asset_url | stylesheet_tag ]_begin{% endcomment %}{% assign ly_asset = 'font-awesome.css' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  | stylesheet_tag }}{% comment %}ly_asset_replace_end{% endcomment %}
+  {% comment %}ly_asset_replace_for_[ 'font-awesome.min.css'| asset_url | stylesheet_tag ]_begin{% endcomment %}{% assign ly_asset = 'font-awesome.min.css' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  | stylesheet_tag }}{% comment %}ly_asset_replace_end{% endcomment %}
+  {% comment %}ly_dir_styles_begin{% endcomment %}{% assign language = cart.attributes["language"] %}{% if language == nil %}{% assign language = shop.metafields["languages"]["default"] %}{% endif %}{% if shop.metafields.languages_dir[language] == 'rtl' %}{% comment %}ly_asset_replace_for_[ 'ly-rtl.css' | asset_url | stylesheet_tag ]_begin{% endcomment %}{% assign ly_asset = 'ly-rtl.css' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  | stylesheet_tag }}{% comment %}ly_asset_replace_end{% endcomment %}{% endif %}{% comment %}ly_dir_styles_end{% endcomment %}</head>
+
+<style>
+  body .load-display{
+    opacity: 1;
+    transition: 1s opacity;
+  }
+  body.fade-out .load-display {
+    opacity: 0;
+    transition: none;
+  }
+
+</style>
+<body id="{{ langify_title | handle }}" class="{% if customer %}customer-logged-in {% endif %}template-{{ template | replace: '.', ' ' | truncatewords: 1, '' | handle }} fade-out" >
+  <div class="se-pre-con"></div>
+  <div class="load-display">
+    <div class="header-fix">
+      {% include 'header-bar' %}
+      <div class="clear"></div>
+      {% include 'header' %}
+    </div>
+
+    <main class="content" role="main">
+      {{ content_for_layout }}
+    </main>
+    {% include 'footer' %}
+    {% include 'popup' %}
+  </div>
+
+  {% for i in (1..4) %}
+  {% capture home_section %}home_section_{{ i }}{% endcapture %}
+  {% if settings[home_section] == 'slider' %}
+  {% assign slider_home_enable = true %}
+  {% endif %}
+  {% endfor %}
+
+  {% if slider_home_enable %}
+  {% comment %}ly_asset_replace_for_[ 'jquery.flexslider.min.js' | asset_url | script_tag ]_begin{% endcomment %}{% assign ly_asset = 'jquery.flexslider.min.js' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  | script_tag }}{% comment %}ly_asset_replace_end{% endcomment %}
+  {% comment %}ly_asset_replace_for_[ 'slider.js' | asset_url | script_tag ]_begin{% endcomment %}{% assign ly_asset = 'slider.js' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  | script_tag }}{% comment %}ly_asset_replace_end{% endcomment %}
+  {% endif %}
+
+  {% comment %}ly_asset_replace_for_[ 'fastclick.min.js' | asset_url | script_tag ]_begin{% endcomment %}{% assign ly_asset = 'fastclick.min.js' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  | script_tag }}{% comment %}ly_asset_replace_end{% endcomment %}
+  {% comment %}ly_asset_replace_for_[ 'bootstrap.min.js' | asset_url | script_tag ]_begin{% endcomment %}{% assign ly_asset = 'bootstrap.min.js' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  | script_tag }}{% comment %}ly_asset_replace_end{% endcomment %}
+  {% comment %}ly_asset_replace_for_[ 'owl.carousel.js' | asset_url | script_tag ]_begin{% endcomment %}{% assign ly_asset = 'owl.carousel.js' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  | script_tag }}{% comment %}ly_asset_replace_end{% endcomment %}
+  {% comment %}ly_asset_replace_for_[ 'owl-js.js' | asset_url | script_tag ]_begin{% endcomment %}{% assign ly_asset = 'owl-js.js' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  | script_tag }}{% comment %}ly_asset_replace_end{% endcomment %}
+  {% comment %}ly_asset_replace_for_[ 'jquery.fancybox.js' | asset_url | script_tag ]_begin{% endcomment %}{% assign ly_asset = 'jquery.fancybox.js' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  | script_tag }}{% comment %}ly_asset_replace_end{% endcomment %}
+
+  {% if template contains 'product' %}
+  {% if settings.product_image_zoom_type == 'lightbox'  %}
+  {% comment %}ly_asset_replace_for_[ 'magnific-popup.min.js' | asset_url | script_tag ]_begin{% endcomment %}{% assign ly_asset = 'magnific-popup.min.js' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  | script_tag }}{% comment %}ly_asset_replace_end{% endcomment %}
+  {% elsif settings.product_image_zoom_type == 'zoom-in' %}
+  {% comment %}ly_asset_replace_for_[ 'jquery.zoom.min.js' | asset_url | script_tag ]_begin{% endcomment %}{% assign ly_asset = 'jquery.zoom.min.js' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  | script_tag }}{% comment %}ly_asset_replace_end{% endcomment %}
+  {% endif %}
+  {% endif %}
+
+  {% if template contains 'article' or template contains 'product' %}
+  {% if settings.social_sharing_blog or settings.social_sharing_products %}
+  {% comment %}ly_asset_replace_for_[ 'social-buttons.js' | asset_url | script_tag ]_begin{% endcomment %}{% assign ly_asset = 'social-buttons.js' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  | script_tag }}{% comment %}ly_asset_replace_end{% endcomment %}
+  {% endif %}
+  {% endif %}
+  <!-- Begin Recently Viewed Products -->
+  {{ '//ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js' | script_tag }}
+  {% comment %}ly_asset_replace_for_[ 'jquery.products.js' | asset_url | script_tag ]_begin{% endcomment %}{% assign ly_asset = 'jquery.products.js' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  | script_tag }}{% comment %}ly_asset_replace_end{% endcomment %}  
+  {% if template contains 'product' %}
+  <script>
+    Shopify.Products.recordRecentlyViewed();
+  </script>
+  {% endif %}
+  <!-- End Recently Viewed Products -->
+  {% include 'currencies' %}
+  {% include 'sca-quick-view-template' %}
+  <script>
+    if ($(document.body).height() < $(window).height()) {
+      $('#footer-wrapper').attr('style', 'position: fixed!important; bottom: 0; width:100%; margin:0;');
+    }
+  </script>
+  {% comment %}
+  <script>
+    $(document).ready(function(){
+      $(window).load(function() {
+        $('.slider_loader').css("display","none");
+        $('#flexslider1').css("opacity","1");
+        // $('.home-slider').css("height","inherit");
+      });
+    });
+  </script>
+  {% endcomment %}
+  {{ 'https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/0.8.2/css/flag-icon.min.css' | stylesheet_tag }} 
+  {{ 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.2/css/bootstrap-select.min.css' | stylesheet_tag }} 
+  {{ 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.2/js/bootstrap-select.min.js' | script_tag }}
+  <script>
+    $(function(){
+      $('.selectpicker').selectpicker();
+    });
+  </script>
+
+  {% comment %}ly_asset_replace_for_[ 'scroll-to-top.js' | asset_url | script_tag ]_begin{% endcomment %}{% assign ly_asset = 'scroll-to-top.js' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  | script_tag }}{% comment %}ly_asset_replace_end{% endcomment %}
+
+  {% comment %}ly_asset_replace_for_[ 'swatch-style.css' | asset_url | stylesheet_tag ]_begin{% endcomment %}{% assign ly_asset = 'swatch-style.css' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  | stylesheet_tag }}{% comment %}ly_asset_replace_end{% endcomment %}
+
+  {% include 'iwish_v2' with 'iwishfooter' %}
+  {% comment %}ly_static_code_begin{% endcomment %}{% include 'ly-languages' %}{% comment %}ly_static_code_end{% endcomment %}</body>
+{{ 'jquery.selectbox.css' | asset_url | stylesheet_tag }}
+
+{{'jquery.selectbox.js' | asset_url | script_tag }}
+
+<script>
+
+  $(function() {
+
+    $(window).scroll(function() {
+      var windscroll = $(window).scrollTop();
+      if (windscroll > 120) { 
+        $('.header-fix').addClass('sticky');
+      } else {
+        $('.header-fix').removeClass('sticky');
+      }
+
+    }).scroll();
+
+  });
+
+</script>
+{% comment %}
+<script type="text/template" id="main-example-template">
+<div class="time <%= label %>">
+  <span class="count curr top"><%= curr %></span>
+  <span class="count next top"><%= next %></span>
+  <span class="count next bottom"><%= next %></span>
+  <span class="count curr bottom"><%= curr %></span>
+  <span class="label"><%= label.length < 6 ? label : label.substr(0, 3)  %></span>
+  </div>
+</script>
+
+<script type="text/javascript">
+  $(window).on('load', function() {
+    var labels = [ 'weeks','days', 'hours', 'minutes', 'seconds'],
+        // nextYear = (new Date().getFullYear() + 1) + '/07/03',
+        nextYear = '2016/09/19',
+        template = _.template($('#main-example-template').html()),
+        currDate = '00:00:00:00:00',
+        nextDate = '00:00:00:00:00',
+        parser = /([0-9]{2})/gi,
+        $example = $('#main-example');
+
+    // Parse countdown string to an object
+    function strfobj(str) {
+      var parsed = str.match(parser),
+          obj = {};
+      labels.forEach(function(label, i) {
+        obj[label] = parsed[i]
+      });
+      return obj;
+    }
+    // Return the time components that diffs
+    function diff(obj1, obj2) {
+      var diff = [];
+      labels.forEach(function(key) {
+        if (obj1[key] !== obj2[key]) {
+          diff.push(key);
+        }
+      });
+      return diff;
+    }
+    // Build the layout
+    var initData = strfobj(currDate);
+    labels.forEach(function(label, i) {
+      $example.append(template({
+        curr: initData[label],
+        next: initData[label],
+        label: label
+      }));
+    });
+    // Starts the countdown
+    $example.countdown(nextYear, function(event) {
+      var newDate = event.strftime('%w:%d:%H:%M:%S'),
+          data;
+      if (newDate !== nextDate) {
+        currDate = nextDate;
+        nextDate = newDate;
+        // Setup the data
+        data = {
+          'curr': strfobj(currDate),
+          'next': strfobj(nextDate)
+        };
+        // Apply the new values to each node that changed
+        diff(data.curr, data.next).forEach(function(label) {
+          var selector = '.%s'.replace(/%s/, label),
+              $node = $example.find(selector);
+          // Update the node
+          $node.removeClass('flip');
+          $node.find('.curr').text(data.curr[label]);
+          $node.find('.next').text(data.next[label]);
+          // Wait for a repaint to then flip
+          _.delay(function($node) {
+            $node.addClass('flip');
+          }, 50, $node);
+        });
+      }
+    });
+  });
+</script> 
+{% endcomment %}
+<style>
+  /* Paste this css to your style sheet file or under head tag */
+  /* This only works with JavaScript, 
+  if it's not present, don't show loader */
+  .no-js #loader { display: none;  }
+  .js #loader { display: block; position: absolute; left: 100px; top: 0; }
+  .se-pre-con {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background:#fff url({% comment %}ly_asset_replace_for_['loading-bag.gif' | asset_url  ]_begin{% endcomment %}{% assign ly_asset = 'loading-bag.gif' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}) no-repeat scroll center center / 311px auto;
+  }
+</style>
+<script type="text/javascript">
+  $(function () {
+    $("#mce-MMERGE3").selectbox();
+  });
+</script>
+<script>
+  //paste this code under the head tag or in a separate js file.
+  // Wait for window load
+  $(window).load(function() {
+    // Animate loader off screen
+    $(".se-pre-con").fadeOut("slow");;
+  });
+</script>
+<script>
+  window.onload = function() {
+    $('body').removeClass('fade-out');
+  }
+  
+</script>
+{{ 'swatch-image_change.js' | asset_url | script_tag }}
+<script>
+  $(document).ready(function(){
+    jQuery(function() {
+      jQuery('.swatch :radio').change(function() {
+        var optionIndex = jQuery(this).closest('.swatch').attr('data-option-index');
+        var optionValue = jQuery(this).val();
+        jQuery(this)
+        .closest('form')
+        .find('.single-option-selector')
+        .eq(optionIndex)
+        .val(optionValue)
+        .trigger('change');
+      });
+    });
+  });
+</script>
+
+{% comment %}ly_asset_replace_for_[ 'timber.js' | asset_url | script_tag ]_begin{% endcomment %}{% assign ly_asset = 'timber.js' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  | script_tag }}{% comment %}ly_asset_replace_end{% endcomment %}
+{% comment %}ly_asset_replace_for_[ 'theme.js' | asset_url | script_tag ]_begin{% endcomment %}{% assign ly_asset = 'theme.js' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  | script_tag }}{% comment %}ly_asset_replace_end{% endcomment %}
+
+{{ 'swatch-image_change.js' | asset_url | script_tag }}
+<script>
+  $(document).ready(function(){
+    jQuery(function() {
+      jQuery('.swatch :radio').change(function() {
+        var optionIndex = jQuery(this).closest('.swatch').attr('data-option-index');
+        var optionValue = jQuery(this).val();
+        jQuery(this)
+        .closest('form')
+        .find('.single-option-selector')
+        .eq(optionIndex)
+        .val(optionValue)
+        .trigger('change');
+      });
+    });
+  });
+</script>
+
+
+{{'jquery-cookie.js' | asset_url | script_tag }}
+{% include 'country-popup' %}
+</html>
+{% comment %}ly_static_code_begin{% endcomment %}{% endcapture %}{% include 'ly-static' with ly_content %}{% comment %}ly_static_code_end{% endcomment %}
